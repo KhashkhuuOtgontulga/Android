@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity
         });
 
         for (int i = 0; i < 4; i++) {
-            stockList.add(new Stock("AAPL", "Apple",
+            stockList.add(new Stock("TSLA", "Apple",
                     152.34, 1.25, 5.13));
         }
     }
@@ -69,15 +69,31 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onClick(View v) {
-        Toast.makeText(v.getContext(), "Going to the website", Toast.LENGTH_SHORT).show();
-
         // go to the internet and display the stock information
         int pos = recyclerView.getChildLayoutPosition(v);
         Stock s = stockList.get(pos);
 
-        Intent i = new Intent(Intent.ACTION_VIEW);
-        i.setData(Uri.parse(stockURL + s.getSymbol()));
-        startActivity(i);
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (cm == null) {
+            Toast.makeText(this, "Cannot access ConnectivityManager", Toast.LENGTH_SHORT).show();
+        }
+
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+
+        if (netInfo != null && netInfo.isConnected()) {
+            Toast.makeText(v.getContext(), "Going to the website", Toast.LENGTH_SHORT).show();
+
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(stockURL + s.getSymbol()));
+            startActivity(i);
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("No Network Connection");
+            builder.setMessage("Cannot Go to MarketWatch for " + s.getSymbol() + " Without a Network Connection");
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
     }
 
     @Override
@@ -111,35 +127,68 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void doRefresh() {
-        stockAdapter.notifyDataSetChanged();
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (cm == null) {
+            Toast.makeText(this, "Cannot access ConnectivityManager", Toast.LENGTH_SHORT).show();
+        }
+
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+
+        if (netInfo != null && netInfo.isConnected()) {
+            stockAdapter.notifyDataSetChanged();
+            Toast.makeText(this, "Updating stock info", Toast.LENGTH_SHORT).show();
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("No Network Connection");
+            builder.setMessage("Stocks Cannot Be Updated Without a Network Connection");
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
         swiper.setRefreshing(false);
-        Toast.makeText(this, "Updating stock info", Toast.LENGTH_SHORT).show();
     }
 
     public boolean addStock(MenuItem item) {
-        final EditText input;
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (cm == null) {
+            Toast.makeText(this, "Cannot access ConnectivityManager", Toast.LENGTH_SHORT).show();
+            return false;
+        }
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Stock Selection");
-        builder.setMessage("Please enter a Stock Symbol:");
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
 
-        input = new EditText(this);
-        input.setGravity(CENTER_HORIZONTAL);
+        if (netInfo != null && netInfo.isConnected()) {
+            final EditText input;
 
-        builder.setView(input);
-        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                displayToast();
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        AlertDialog dialog = builder.create();
-        dialog.show();
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Stock Selection");
+            builder.setMessage("Please enter a Stock Symbol:");
+
+            input = new EditText(this);
+            input.setGravity(CENTER_HORIZONTAL);
+
+            builder.setView(input);
+            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    displayToast();
+                }
+            });
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("No Network Connection");
+            builder.setMessage("Stocks Cannot Be Added Without a Network Connection");
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
 
         return false;
     }
