@@ -12,7 +12,9 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,12 +22,13 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static android.view.Gravity.CENTER_HORIZONTAL;
 
 public class MainActivity extends AppCompatActivity
-        implements View.OnClickListener, View.OnLongClickListener{
+        implements View.OnClickListener, View.OnLongClickListener {
 
     private static final String TAG = "MainActivity";
     private final List<Stock> stockList = new ArrayList<Stock>();
@@ -37,16 +40,24 @@ public class MainActivity extends AppCompatActivity
 
     private static final String stockURL = "http://www.marketwatch.com/investing/stock/";
 
+    private DataBaseHandler databaseHandler;
+
+    private HashMap<String, String> sData = new HashMap<>();
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // basic setup
         recyclerView = findViewById(R.id.recycler);
         stockAdapter = new StockAdapter(stockList, this);
         recyclerView.setAdapter(stockAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        databaseHandler = new DataBaseHandler(this);
 
+        // refresher
         swiper = findViewById(R.id.swiper);
         swiper.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -55,21 +66,38 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        for (int i = 0; i < 4; i++) {
+        // load the stock symbol and name into the Hashmap
+        new NameDownloaderAsyncTask(this).execute();
+
+        databaseHandler.dumpDbToLog();
+        // load the stocks of our database
+        // so we do not lose our stocks
+        // everytime we exit the app and enter it again
+        // the user expects to have the same stocks
+        // they added to the app to still be there
+        ArrayList<Stock> list = databaseHandler.loadStocks();
+        stockList.addAll(list);
+        //sort(stockList);
+        stockAdapter.notifyDataSetChanged();
+
+        /*for (int i = 0; i < 4; i++) {
             stockList.add(new Stock("TSLA", "Apple",
                     152.34, 1.25, 5.13));
-        }
+        }*/
     }
 
+    // create the menu to add a stock
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.action_menu, menu);
         return true;
     }
 
+    // go to the internet and display the stock information
+    // it shouldn't display information when there is
+    // no internet connection
     @Override
     public void onClick(View v) {
-        // go to the internet and display the stock information
         int pos = recyclerView.getChildLayoutPosition(v);
         Stock s = stockList.get(pos);
 
@@ -96,6 +124,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    // delete a stock
     @Override
     public boolean onLongClick(View v) {
         Toast.makeText(v.getContext(), "Deleting a stock", Toast.LENGTH_SHORT).show();
@@ -126,6 +155,7 @@ public class MainActivity extends AppCompatActivity
         return false;
     }
 
+    // refresh if there is a internet connection
     private void doRefresh() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         if (cm == null) {
@@ -148,6 +178,7 @@ public class MainActivity extends AppCompatActivity
         swiper.setRefreshing(false);
     }
 
+    // download the stock information
     public boolean addStock(MenuItem item) {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         if (cm == null) {
@@ -158,19 +189,20 @@ public class MainActivity extends AppCompatActivity
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
 
         if (netInfo != null && netInfo.isConnected()) {
-            final EditText input;
-
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            final EditText input = new EditText(this);
+            input.setGravity(CENTER_HORIZONTAL);
+            builder.setView(input);
+
             builder.setTitle("Stock Selection");
             builder.setMessage("Please enter a Stock Symbol:");
 
-            input = new EditText(this);
-            input.setGravity(CENTER_HORIZONTAL);
+            Log.d(TAG, "key is : " + input.getText().toString());
 
-            builder.setView(input);
             builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    displayToast();
+                    downloadStock(input.getText().toString());
                 }
             });
             builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -192,8 +224,17 @@ public class MainActivity extends AppCompatActivity
 
         return false;
     }
+    public void downloadStock(String key) {
+        new StockDownloaderAsyncTask(this).execute(key);
+        Log.d(TAG, "downloadStock: " + key);
+    }
 
-    public void displayToast(){
-        Toast.makeText(this, "Added stock", Toast.LENGTH_SHORT).show();
+    // add a stock to the database
+    // and to the stocklist to display it
+    public void insertStock(Stock s) {
+        stockList.add(0, s);
+        //sort(stockList);
+        databaseHandler.addStock(s);
+        stockAdapter.notifyDataSetChanged();
     }
 }
