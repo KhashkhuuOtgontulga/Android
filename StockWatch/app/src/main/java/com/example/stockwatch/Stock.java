@@ -58,4 +58,12 @@ public class Stock implements Serializable {
     public void setChangePercent(double changePercent) {
         this.changePercent = changePercent;
     }
+
+    // need to implement equals method in the stock class
+    // and not in main activity
+    @Override
+    public boolean equals(Object obj) {
+        Stock other = (Stock)obj;
+        return symbol.equals(other.getSymbol());
+    }
 }

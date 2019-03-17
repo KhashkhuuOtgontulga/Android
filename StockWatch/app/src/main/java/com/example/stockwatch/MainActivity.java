@@ -228,7 +228,12 @@ public class MainActivity extends AppCompatActivity
     // add a stock to the database
     // and to the stocklist to display it
     public void insertStock(Stock s) {
+        Log.d(TAG, "insertStock: before checking contains");
+        // simply check if the array list contains
+        // that stock. but you need to implement
+        // equals method in the stock class
         if(stockList.contains(s)) {
+            Log.d(TAG, "insertStock: stocklist contains " + s.getCompanyName());
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setIcon(R.drawable.ic_baseline_warning_24px);
             builder.setTitle("Duplicate Stock");
@@ -238,6 +243,7 @@ public class MainActivity extends AppCompatActivity
             dialog.show();
         }
         else {
+            Log.d(TAG, "insertStock: stocklist does not contain " + s.getCompanyName());
             stockList.add(0, s);
             Collections.sort(stockList, new Sortbyname());
             databaseHandler.addStock(s);

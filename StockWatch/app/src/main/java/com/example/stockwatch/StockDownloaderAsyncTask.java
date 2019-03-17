@@ -55,7 +55,7 @@ public class StockDownloaderAsyncTask extends AsyncTask<String, Integer, String>
         // and not a private attribute for some reason
         // it works to get the first element of params
         // making it private made my program not read it
-        String stock_symbol = params[0];
+        String stock_symbol = params[0].toUpperCase();
         Log.d(TAG, "stock symbol is " + stock_symbol);
         STATS_URL = "https://api.iextrading.com/1.0/stock/" + stock_symbol + "/quote?displayPercent=true";
         Uri dataUri = Uri.parse(STATS_URL);
