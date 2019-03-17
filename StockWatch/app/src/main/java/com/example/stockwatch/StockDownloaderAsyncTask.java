@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,13 +24,18 @@ import static android.content.ContentValues.TAG;
 public class StockDownloaderAsyncTask extends AsyncTask<String, Integer, String> {
 
     private MainActivity mainActivity;
-
-    private static String stock_symbol;
     private static String STATS_URL;
 
     public StockDownloaderAsyncTask(MainActivity ma) {
         mainActivity = ma;
     }
+
+    // order of operations
+    // 1. onPreExecute()
+    // 2. doInBackground()
+    // 3. onPostExecute()
+    // 4. parseJson()
+    // 5. insertStock()
 
     @Override
     protected void onPreExecute() {
@@ -45,7 +51,11 @@ public class StockDownloaderAsyncTask extends AsyncTask<String, Integer, String>
 
     @Override
     protected String doInBackground(String... params) {
-        stock_symbol = "GOOG"; //Arrays.toString(new String[]{params[0]});
+        // make stock_symbol a local variable
+        // and not a private attribute for some reason
+        // it works to get the first element of params
+        // making it private made my program not read it
+        String stock_symbol = params[0];
         Log.d(TAG, "stock symbol is " + stock_symbol);
         STATS_URL = "https://api.iextrading.com/1.0/stock/" + stock_symbol + "/quote?displayPercent=true";
         Uri dataUri = Uri.parse(STATS_URL);
@@ -81,6 +91,7 @@ public class StockDownloaderAsyncTask extends AsyncTask<String, Integer, String>
     }
 
 
+    // return a Stock to add it to the database and stocklist
     private Stock parseJSON(String s) {
 
         try {
@@ -98,10 +109,13 @@ public class StockDownloaderAsyncTask extends AsyncTask<String, Integer, String>
             if (c != null && !c.trim().isEmpty())
                 change = Double.parseDouble(c);
 
+            DecimalFormat df = new DecimalFormat("#.##");
+
             String cP = jStock.getString("changePercent");
             double changePercent = 0;
             if (cP != null && !cP.trim().isEmpty())
-                changePercent = Double.parseDouble(cP);
+                // For example, String '3.22918' -> Double 3.22 -> String '3.22' -> Double 3.22
+                changePercent = Double.parseDouble(df.format(Double.parseDouble(cP)));
 
             Log.d(TAG, "Stocks to add to database and list: " + symbol + name + lP + c + cP);
 

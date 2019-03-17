@@ -1,5 +1,7 @@
 package com.example.stockwatch;
 
+import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +10,8 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import static android.content.ContentValues.TAG;
 
 public class StockAdapter extends RecyclerView.Adapter<StockViewHolder> {
 
@@ -39,6 +43,31 @@ public class StockAdapter extends RecyclerView.Adapter<StockViewHolder> {
         holder.latestPriceField.setText(Double.toString(oneItem.getLatestPrice()));
         holder.changeField.setText(Double.toString(oneItem.getChange()));
         holder.changePercentField.setText("(" + Double.toString(oneItem.getChangePercent()) + "%)");
+
+        if (oneItem.getChange() > 0) {
+            // green color and up arrow
+            // 0x65FF00
+            holder.symbolField.setTextColor(Color.GREEN);
+            holder.companyNameField.setTextColor(Color.GREEN);
+            holder.latestPriceField.setTextColor(Color.GREEN);
+            holder.changeField.setTextColor(Color.GREEN);
+            holder.changePercentField.setTextColor(Color.GREEN);
+            // U + 25B2
+            holder.directionField.setText("\u25b2");
+            Log.d(TAG, "onBindViewHolder made it to setText for ▲");
+        }
+        else {
+            // red color and down arrow
+            // 0xFF0000
+            holder.symbolField.setTextColor(Color.RED);
+            holder.companyNameField.setTextColor(Color.RED);
+            holder.latestPriceField.setTextColor(Color.RED);
+            holder.changeField.setTextColor(Color.RED);
+            holder.changePercentField.setTextColor(Color.RED);
+            // U + 25BC
+            holder.directionField.setText("\u25bc");
+            Log.d(TAG, "onBindViewHolder made it to setText for ▼");
+        }
     }
 
     @Override

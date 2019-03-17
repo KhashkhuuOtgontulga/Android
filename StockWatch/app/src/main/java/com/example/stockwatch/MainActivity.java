@@ -9,20 +9,21 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 
 import static android.view.Gravity.CENTER_HORIZONTAL;
@@ -31,19 +32,14 @@ public class MainActivity extends AppCompatActivity
         implements View.OnClickListener, View.OnLongClickListener {
 
     private static final String TAG = "MainActivity";
-    private final List<Stock> stockList = new ArrayList<Stock>();
-
-    private RecyclerView recyclerView;
-    private StockAdapter stockAdapter;
-
-    private SwipeRefreshLayout swiper; // The SwipeRefreshLayout
+    private final List<Stock> stockList = new ArrayList<>();
 
     private static final String stockURL = "http://www.marketwatch.com/investing/stock/";
 
+    private RecyclerView recyclerView;
+    private StockAdapter stockAdapter;
+    private SwipeRefreshLayout swiper; // The SwipeRefreshLayout
     private DataBaseHandler databaseHandler;
-
-    private HashMap<String, String> sData = new HashMap<>();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +73,7 @@ public class MainActivity extends AppCompatActivity
         // they added to the app to still be there
         ArrayList<Stock> list = databaseHandler.loadStocks();
         stockList.addAll(list);
-        //sort(stockList);
+        Collections.sort(stockList, new Sortbyname());
         stockAdapter.notifyDataSetChanged();
 
         /*for (int i = 0; i < 4; i++) {
@@ -232,9 +228,20 @@ public class MainActivity extends AppCompatActivity
     // add a stock to the database
     // and to the stocklist to display it
     public void insertStock(Stock s) {
-        stockList.add(0, s);
-        //sort(stockList);
-        databaseHandler.addStock(s);
-        stockAdapter.notifyDataSetChanged();
+        if(stockList.contains(s)) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setIcon(R.drawable.ic_baseline_warning_24px);
+            builder.setTitle("Duplicate Stock");
+            builder.setMessage("Stock Symbol " + s.getSymbol() + " is already displayed");
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
+        else {
+            stockList.add(0, s);
+            Collections.sort(stockList, new Sortbyname());
+            databaseHandler.addStock(s);
+            stockAdapter.notifyDataSetChanged();
+        }
     }
 }

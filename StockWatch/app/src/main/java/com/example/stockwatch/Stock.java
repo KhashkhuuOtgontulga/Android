@@ -1,6 +1,7 @@
 package com.example.stockwatch;
 
 import java.io.Serializable;
+import java.util.Comparator;
 
 public class Stock implements Serializable {
     private String symbol;
@@ -10,6 +11,7 @@ public class Stock implements Serializable {
     private double changePercent;
 
     public Stock(String symbol, String companyName, double latestPrice, double change, double changePercent) {
+        super();
         this.symbol = symbol;
         this.companyName = companyName;
         this.latestPrice = latestPrice;

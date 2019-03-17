@@ -13,6 +13,7 @@ public class StockViewHolder extends RecyclerView.ViewHolder{
     public TextView latestPriceField;
     public TextView changeField;
     public TextView changePercentField;
+    public TextView directionField;
 
     public StockViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -21,5 +22,6 @@ public class StockViewHolder extends RecyclerView.ViewHolder{
         latestPriceField = itemView.findViewById(R.id.latestPriceField);
         changeField = itemView.findViewById(R.id.changeField);
         changePercentField = itemView.findViewById(R.id.changePercentField);
+        directionField = itemView.findViewById(R.id.directionField);
     }
 }
