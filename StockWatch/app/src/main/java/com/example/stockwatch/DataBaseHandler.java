@@ -113,28 +113,5 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 
         Log.d(TAG, "deleteStock: " + cnt);
     }
-
-    public void dumpDbToLog() {
-        Cursor cursor = database.rawQuery("select * from " + TABLE_NAME, null);
-        if (cursor != null) {
-            cursor.moveToFirst();
-
-            Log.d(TAG, "dumpDbToLog: vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv");
-            for (int i = 0; i < cursor.getCount(); i++) {
-                String symbol = cursor.getString(0);
-                String company = cursor.getString(1);
-                double latestPrice = cursor.getDouble(2);
-                double change = cursor.getDouble(3);
-                double changePercent = cursor.getDouble(4);
-                Log.d(TAG, "dumpDbToLog: " +
-                        String.format("%s %-18s", SYMBOL + ":", symbol) +
-                        String.format("%s %-18s", COMPANY + ":", company));
-                cursor.moveToNext();
-            }
-            cursor.close();
-        }
-
-        Log.d(TAG, "dumpDbToLog: ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
-    }
 }
 

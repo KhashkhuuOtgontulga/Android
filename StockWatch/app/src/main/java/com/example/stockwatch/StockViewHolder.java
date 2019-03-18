@@ -22,6 +22,5 @@ public class StockViewHolder extends RecyclerView.ViewHolder{
         latestPriceField = itemView.findViewById(R.id.latestPriceField);
         changeField = itemView.findViewById(R.id.changeField);
         changePercentField = itemView.findViewById(R.id.changePercentField);
-        directionField = itemView.findViewById(R.id.directionField);
     }
 }

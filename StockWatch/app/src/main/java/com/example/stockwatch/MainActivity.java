@@ -71,7 +71,6 @@ public class MainActivity extends AppCompatActivity
         // load the stock symbol and name into the Hashmap
         new NameDownloaderAsyncTask(this).execute();
 
-        databaseHandler.dumpDbToLog();
         // load the stocks of our database
         // so we do not lose our stocks
         // everytime we exit the app and enter it again

@@ -41,7 +41,6 @@ public class StockAdapter extends RecyclerView.Adapter<StockViewHolder> {
         holder.symbolField.setText(oneItem.getSymbol());
         holder.companyNameField.setText(oneItem.getCompanyName());
         holder.latestPriceField.setText(Double.toString(oneItem.getLatestPrice()));
-        holder.changeField.setText(Double.toString(oneItem.getChange()));
         holder.changePercentField.setText("(" + Double.toString(oneItem.getChangePercent()) + "%)");
 
         if (oneItem.getChange() > 0) {
@@ -52,9 +51,8 @@ public class StockAdapter extends RecyclerView.Adapter<StockViewHolder> {
             holder.latestPriceField.setTextColor(Color.GREEN);
             holder.changeField.setTextColor(Color.GREEN);
             holder.changePercentField.setTextColor(Color.GREEN);
-            // U + 25B2
-            holder.directionField.setText("\u25b2");
-            Log.d(TAG, "onBindViewHolder made it to setText for ▲");
+            holder.changeField.setText("▲ " + Double.toString(oneItem.getChange()));
+
         }
         else {
             // red color and down arrow
@@ -64,9 +62,7 @@ public class StockAdapter extends RecyclerView.Adapter<StockViewHolder> {
             holder.latestPriceField.setTextColor(Color.RED);
             holder.changeField.setTextColor(Color.RED);
             holder.changePercentField.setTextColor(Color.RED);
-            // U + 25BC
-            holder.directionField.setText("\u25bc");
-            Log.d(TAG, "onBindViewHolder made it to setText for ▼");
+            holder.changeField.setText("▼ " + Double.toString(oneItem.getChange()));
         }
     }
 
