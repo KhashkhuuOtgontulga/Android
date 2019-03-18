@@ -14,6 +14,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,7 +25,9 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static android.view.Gravity.CENTER_HORIZONTAL;
 
@@ -40,6 +43,9 @@ public class MainActivity extends AppCompatActivity
     private StockAdapter stockAdapter;
     private SwipeRefreshLayout swiper; // The SwipeRefreshLayout
     private DataBaseHandler databaseHandler;
+    private HashMap<String, String> sData;
+    private EditText et;
+    private String input;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +95,7 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    // go to the internet and display the stock information
+    // go to the internet and display the stock information on MarketWatch
     // it shouldn't display information when there is
     // no internet connection
     @Override
@@ -120,7 +126,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    // delete a stock
+    // to delete a stock
     @Override
     public boolean onLongClick(View v) {
         Toast.makeText(v.getContext(), "Deleting a stock", Toast.LENGTH_SHORT).show();
@@ -174,7 +180,10 @@ public class MainActivity extends AppCompatActivity
         swiper.setRefreshing(false);
     }
 
-    // download the stock information
+    // when the user presses the menu icon to add a stock
+    // they enter a symbol or name
+    // then we download the stock information
+    // when they press okay to add the stock
     public boolean addStock(MenuItem item) {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         if (cm == null) {
@@ -184,21 +193,61 @@ public class MainActivity extends AppCompatActivity
 
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
 
+        // Connected to Network?
         if (netInfo != null && netInfo.isConnected()) {
+            // Display Add Stock Symbol Entry Dialog
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-            final EditText input = new EditText(this);
-            input.setGravity(CENTER_HORIZONTAL);
-            builder.setView(input);
+            et = new EditText(this);
+            et.setGravity(CENTER_HORIZONTAL);
+            // same thing as putting android:textAllCaps="true"
+            // in the editText of an xml file
+            et.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+            builder.setView(et);
 
             builder.setTitle("Stock Selection");
             builder.setMessage("Please enter a Stock Symbol:");
-
-            Log.d(TAG, "key is : " + input.getText().toString());
-
             builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    downloadStock(input.getText().toString());
+                    // - cannot set the String input to be final
+                    // or else the input is an empty string
+                    // when I call downloadStock()
+                    // final String input = et.getText().toString().toUpperCase();
+                    // - I should get the input after they press okay and not
+                    // outside the onClick or else the input will be an empty string
+                    input = et.getText().toString().toUpperCase();
+                    /*
+                     Get matching symbols/names from NameDownloader
+                     Did you Get a Stock result?
+                     */
+                    /*   key:value
+                    *    "AAPL":"Apple Inc."
+                    *    input = apple or Apple or a messed up one like APple
+                    *    containsValue(obj) -> obj must be an exact match
+                    *    so in this case it must be exactly "Apple Inc."
+                    *    how to make apple -> Apple Inc.
+                    * */
+                    Log.d(TAG, "onClick addStock input: " + input);
+                    if (sData.containsKey(input)) {
+                        // ONE Stock
+                        // Use selected symbol to execute StockDownloader AsyncTask
+                        downloadStock(input);
+                    }
+                    // need another case to get the key
+                    // of the value and then input it to
+                    // downloadStock because downloadStock
+                    // takes in a symbol as input and not
+                    // a value as it will be downloading
+                    // information with the wrong URL
+                    // thus we need to implement a getKey function
+                    // sData.containsValue("apple")
+                    // sData.containsValue("Apple Inc.")
+                    else if(sData.containsValue(input)) {
+                        downloadStock(getKey(sData, input));
+                    }
+                    // No Stock Found
+                    else {
+                        noStockFound();
+                    }
                 }
             });
             builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -209,7 +258,10 @@ public class MainActivity extends AppCompatActivity
             });
             AlertDialog dialog = builder.create();
             dialog.show();
-        } else {
+        }
+        // No Network Connection
+        // Show Error Dialog
+        else {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("No Network Connection");
             builder.setMessage("Stocks Cannot Be Added Without a Network Connection");
@@ -220,11 +272,35 @@ public class MainActivity extends AppCompatActivity
 
         return false;
     }
+
+    // get the key given a value
+    // in our case, get the symbol when we know the company name
+    public static<K, V> K getKey(Map<K, V> map, V value) {
+        for (Map.Entry<K, V> entry : map.entrySet()) {
+            if (value.equals(entry.getValue())) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
+
+
+    public void noStockFound() {
+        AlertDialog.Builder adb = new AlertDialog.Builder(this);
+        adb.setTitle("Symbol Not Found: " + et.getText().toString().toUpperCase());
+        adb.setMessage("Data for stock symbol");
+
+        AlertDialog d = adb.create();
+        d.show();
+    }
+
+    // called by addStock
     public void downloadStock(String key) {
         new StockDownloaderAsyncTask(this).execute(key);
         Log.d(TAG, "downloadStock: " + key);
     }
 
+    // after returning from StockDownloaderAsyncTask above
     // add a stock to the database
     // and to the stocklist to display it
     public void insertStock(Stock s) {
@@ -249,5 +325,12 @@ public class MainActivity extends AppCompatActivity
             databaseHandler.addStock(s);
             stockAdapter.notifyDataSetChanged();
         }
+    }
+
+    // after returning from NameDownloaderAsyncTask
+    // initialize the hashmap sData so we can check if we
+    // have found a stock or not when we add a stock
+    public void initiateData(HashMap<String, String> data) {
+        sData = data;
     }
 }

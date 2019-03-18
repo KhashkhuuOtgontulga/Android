@@ -23,7 +23,7 @@ public class NameDownloaderAsyncTask extends AsyncTask<String, Integer, String> 
 
     private static final String DATA_URL = "https://api.iextrading.com/1.0/ref-data/symbols";
     private static final String TAG = "NameDownloaderAsyncTask";
-    private HashMap<String, String> sData = new HashMap<>();
+    public HashMap<String, String> sData = new HashMap<>();
 
 
     public NameDownloaderAsyncTask(MainActivity ma) {
@@ -33,6 +33,11 @@ public class NameDownloaderAsyncTask extends AsyncTask<String, Integer, String> 
     @Override
     protected void onPreExecute() {
         Toast.makeText(mainActivity, "Loading Stock Data...", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onPostExecute(String s) {
+        mainActivity.initiateData(sData);
     }
 
     @Override
@@ -87,11 +92,10 @@ public class NameDownloaderAsyncTask extends AsyncTask<String, Integer, String> 
 
                 // Parse symbol & name data
                 String symbol = jStock.getString("symbol");
-                String name = jStock.getString("name");
+                String name = jStock.getString("name").toUpperCase();
                 // Add symbol & names to symbol:name HashMap
 
-                sData.put("SYMBOL", symbol);
-                sData.put("COMPANY", name);
+                sData.put(symbol, name);
                 Log.d(TAG, "parseJSON: " + symbol + " " + name);
             }
             // Done
