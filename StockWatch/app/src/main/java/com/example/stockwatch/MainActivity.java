@@ -234,10 +234,21 @@ public class MainActivity extends AppCompatActivity
                     *    how to make apple -> Apple Inc.
                     * */
                     Log.d(TAG, "onClick addStock input: " + input);
+                    for (Map.Entry<String, String> e : sData.entrySet()) {
+                        if (e.getValue().contains(input)) {
+                            Log.d(TAG, "onClick searching values for key " + e.getKey() + " and value " + e.getValue());
+                            downloadStock(e.getKey(), Integer.toString(ADD_CODE));
+                            return;
+                        }
+                    }
                     if (sData.containsKey(input)) {
                         // ONE Stock
                         // Use selected symbol to execute StockDownloader AsyncTask
                         downloadStock(input, Integer.toString(ADD_CODE));
+                    }
+                    // No Stock Found
+                    else {
+                        noStockFound();
                     }
                     // need another case to get the key
                     // of the value and then input it to
@@ -248,13 +259,6 @@ public class MainActivity extends AppCompatActivity
                     // thus we need to implement a getKey function
                     // sData.containsValue("apple")
                     // sData.containsValue("Apple Inc.")
-                    else if(sData.containsValue(input)) {
-                        downloadStock(getKey(sData, input), Integer.toString(ADD_CODE));
-                    }
-                    // No Stock Found
-                    else {
-                        noStockFound();
-                    }
                 }
             });
             builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
