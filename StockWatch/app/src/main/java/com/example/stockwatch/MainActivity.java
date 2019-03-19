@@ -24,6 +24,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -218,15 +219,16 @@ public class MainActivity extends AppCompatActivity
                     input = et.getText().toString().toUpperCase();
                     Log.d(TAG, "onClick addStock input: " + input);
 
-                    // num_of_chars needs to be more than the number of characters displayed when
-                    // multiple stocks are found
-                    final String[] sArray = new String[30];
+                    // used an arraylist instead of an array so I don't hardcode a fixed size
+                    // sometimes having multiple stocksfound goes index out of bounds with an
+                    // array but not an arraylist because it dynamically grows
+                    final ArrayList<String> sArray = new ArrayList<String>();
                     int i = 0;
 
                     for (Map.Entry<String, String> e : sData.entrySet()) {
                         if (e.getKey().startsWith(input) || e.getValue().split(" ")[0].startsWith(input)) {
                             Log.d(TAG, "Results "+ i + ": " + e.getKey() + " " + e.getValue());
-                            sArray[i] = e.getKey() + " - " + e.getValue();
+                            sArray.add(e.getKey() + " - " + e.getValue());
                             i++;
                         }
                     }
@@ -240,7 +242,7 @@ public class MainActivity extends AppCompatActivity
                         }
                         else {
                             // its a value
-                            downloadStock(sArray[0].split(" ")[0], Integer.toString(ADD_CODE));
+                            downloadStock(sArray.get(0).split(" ")[0], Integer.toString(ADD_CODE));
                         }
                     }
                     // Multiple stocks found
@@ -276,17 +278,18 @@ public class MainActivity extends AppCompatActivity
         return false;
     }
 
-    public void multipleResults(final String[] sArray) {
+    public void multipleResults(final ArrayList<String> sArray) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
         builder.setTitle("Make a selection");
-        // Set the builder to display the string array as a selectable
-        // list, and add the "onClick" for when a selection is made
-        builder.setItems(sArray, new DialogInterface.OnClickListener() {
+        final String[] array = sArray.toArray(new String[sArray.size()]);
+
+        builder.setItems(array, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 // make sArray[which] to a String by sArray[which].toString
                 // then split it to get the first index which is the symbol of the company
-                Toast.makeText(MainActivity.this, "You selected: " + sArray[which].toString().split(" ")[0], Toast.LENGTH_SHORT).show();
-                downloadStock(sArray[which].toString().split(" ")[0], Integer.toString(ADD_CODE));
+                Toast.makeText(MainActivity.this, "You selected: " + array[which].toString().split(" ")[0], Toast.LENGTH_SHORT).show();
+                downloadStock(array[which].toString().split(" ")[0], Integer.toString(ADD_CODE));
             }
         });
 
@@ -296,6 +299,7 @@ public class MainActivity extends AppCompatActivity
                 finish();
             }
         });
+
         AlertDialog dialog = builder.create();
 
         dialog.show();

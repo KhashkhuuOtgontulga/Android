@@ -39,7 +39,7 @@
         android:id="@+id/latestPriceField"
         android:layout_width="80dp"
         android:layout_height="30dp"
-        android:layout_marginStart="12dp"
+        android:layout_marginStart="220dp"
         android:text="@string/textview"
         android:textAlignment="center"
         android:textSize="18sp"
@@ -50,13 +50,14 @@
         android:id="@+id/changeField"
         android:layout_width="80dp"
         android:layout_height="0dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="108dp"
         android:text="@string/textview"
         android:textAlignment="textEnd"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="@+id/latestPriceField"
         app:layout_constraintStart_toEndOf="@+id/latestPriceField"
-        app:layout_constraintTop_toTopOf="@+id/latestPriceField" />
+        app:layout_constraintTop_toTopOf="@+id/latestPriceField"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/changePercentField"
@@ -68,8 +69,9 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="@+id/changeField"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.265"
         app:layout_constraintStart_toEndOf="@+id/changeField"
-        app:layout_constraintTop_toTopOf="@+id/changeField" />
+        app:layout_constraintTop_toTopOf="@+id/changeField"
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
