@@ -70,22 +70,16 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                 null, // don't filter by row groups
                 null); // The sort order
 
+        //Log.d(TAG, "loadStocks: " + cursor.toString());
         if (cursor != null) {
             cursor.moveToFirst();
 
             for (int i = 0; i < cursor.getCount(); i++) {
                 String symbol = cursor.getString(0);
                 String name = cursor.getString(1);
-                String latestPrice = cursor.getString(2);
-                String change = cursor.getString(3);
-                String changePercent = cursor.getString(4);
 
                 //Log.d(TAG, "cursor info: " + symbol + name + latestPrice + change + changePercent);
-                Stock s = new Stock(symbol,
-                                    name,
-                                    Double.parseDouble(latestPrice),
-                                    Double.parseDouble(change),
-                                    Double.parseDouble(changePercent));
+                Stock s = new Stock(symbol, name, 0.00, 0.00, 0.00);
                 stocks.add(s);
 
                 cursor.moveToNext();

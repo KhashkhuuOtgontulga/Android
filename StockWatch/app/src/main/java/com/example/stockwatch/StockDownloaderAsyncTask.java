@@ -25,6 +25,7 @@ public class StockDownloaderAsyncTask extends AsyncTask<String, Integer, String>
 
     private MainActivity mainActivity;
     private static String STATS_URL;
+    private int code;
 
     public StockDownloaderAsyncTask(MainActivity ma) {
         mainActivity = ma;
@@ -46,7 +47,7 @@ public class StockDownloaderAsyncTask extends AsyncTask<String, Integer, String>
     protected void onPostExecute(String s) {
         //ArrayList<Stock> countryList =
         Log.d(TAG, "I am in onPostExecute");
-        mainActivity.insertStock(parseJSON(s));
+        mainActivity.insertStock(parseJSON(s), code);
     }
 
     @Override
@@ -57,6 +58,7 @@ public class StockDownloaderAsyncTask extends AsyncTask<String, Integer, String>
            making it private made my program not read it
         */
         String stock_symbol = params[0];
+        code = Integer.parseInt(params[1]);
         Log.d(TAG, "stock symbol is " + stock_symbol);
         STATS_URL = "https://api.iextrading.com/1.0/stock/" + stock_symbol + "/quote?displayPercent=true";
         Uri dataUri = Uri.parse(STATS_URL);

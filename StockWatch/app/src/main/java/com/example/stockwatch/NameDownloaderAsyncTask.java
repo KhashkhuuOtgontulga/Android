@@ -96,7 +96,7 @@ public class NameDownloaderAsyncTask extends AsyncTask<String, Integer, String> 
                 // Add symbol & names to symbol:name HashMap
 
                 sData.put(symbol, name);
-                //Log.d(TAG, "parseJSON: " + symbol + " " + name);
+                Log.d(TAG, "parseJSON: " + symbol + " " + name);
             }
             // Done
 

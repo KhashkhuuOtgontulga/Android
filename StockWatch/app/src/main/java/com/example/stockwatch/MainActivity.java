@@ -36,17 +36,21 @@ public class MainActivity extends AppCompatActivity
         implements View.OnClickListener, View.OnLongClickListener {
 
     private static final String TAG = "MainActivity";
-    private final List<Stock> stockList = new ArrayList<>();
-
     private static final String stockURL = "http://www.marketwatch.com/investing/stock/";
+
+    private final List<Stock> stockList = new ArrayList<>();
+    private HashMap<String, String> sData;
 
     private RecyclerView recyclerView;
     private StockAdapter stockAdapter;
     private SwipeRefreshLayout swiper; // The SwipeRefreshLayout
     private DataBaseHandler databaseHandler;
-    private HashMap<String, String> sData;
+
     private EditText et;
     private String input;
+
+    private static final int ADD_CODE = 1;
+    private static final int UPDATE_CODE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +69,7 @@ public class MainActivity extends AppCompatActivity
         swiper.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                Log.d(TAG, "onRefresh method to doRefresh()");
                 doRefresh();
             }
         });
@@ -78,14 +83,9 @@ public class MainActivity extends AppCompatActivity
         // the user expects to have the same stocks
         // they added to the app to still be there
         ArrayList<Stock> list = databaseHandler.loadStocks();
-        stockList.addAll(list);
-        Collections.sort(stockList, new Sortbyname());
-        stockAdapter.notifyDataSetChanged();
-
-        /*for (int i = 0; i < 4; i++) {
-            stockList.add(new Stock("TSLA", "Apple",
-                    152.34, 1.25, 5.13));
-        }*/
+        for (Stock s: list){
+            new StockDownloaderAsyncTask(this).execute(s.getSymbol(), Integer.toString(ADD_CODE));
+        }
     }
 
     // create the menu to add a stock
@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity
         Toast.makeText(v.getContext(), "Deleting a stock", Toast.LENGTH_SHORT).show();
 
         final int pos = recyclerView.getChildLayoutPosition(v);
-        Stock s = stockList.get(pos);
+        final Stock s = stockList.get(pos);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setIcon(R.drawable.ic_baseline_delete_outline_24px);
@@ -141,6 +141,10 @@ public class MainActivity extends AppCompatActivity
         builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 if (!stockList.isEmpty()) {
+                    //delete from the database too so everytime
+                    //you run the app again, you load the same
+                    //stocks as before
+                    databaseHandler.deleteStock(s.getSymbol());
                     stockList.remove(pos);
                     stockAdapter.notifyDataSetChanged();
                 }
@@ -167,8 +171,11 @@ public class MainActivity extends AppCompatActivity
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
 
         if (netInfo != null && netInfo.isConnected()) {
-            stockAdapter.notifyDataSetChanged();
-            Toast.makeText(this, "Updating stock info", Toast.LENGTH_SHORT).show();
+            ArrayList<Stock> list = databaseHandler.loadStocks();
+            for (Stock s: list){
+                new StockDownloaderAsyncTask(this).execute(s.getSymbol(), Integer.toString(UPDATE_CODE));
+            }
+            Toast.makeText(this, "New stock info", Toast.LENGTH_LONG).show();
         } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("No Network Connection");
@@ -230,7 +237,7 @@ public class MainActivity extends AppCompatActivity
                     if (sData.containsKey(input)) {
                         // ONE Stock
                         // Use selected symbol to execute StockDownloader AsyncTask
-                        downloadStock(input);
+                        downloadStock(input, Integer.toString(ADD_CODE));
                     }
                     // need another case to get the key
                     // of the value and then input it to
@@ -242,7 +249,7 @@ public class MainActivity extends AppCompatActivity
                     // sData.containsValue("apple")
                     // sData.containsValue("Apple Inc.")
                     else if(sData.containsValue(input)) {
-                        downloadStock(getKey(sData, input));
+                        downloadStock(getKey(sData, input), Integer.toString(ADD_CODE));
                     }
                     // No Stock Found
                     else {
@@ -295,35 +302,45 @@ public class MainActivity extends AppCompatActivity
     }
 
     // called by addStock
-    public void downloadStock(String key) {
-        new StockDownloaderAsyncTask(this).execute(key);
+    public void downloadStock(String key, String code) {
+        new StockDownloaderAsyncTask(this).execute(key, code);
         Log.d(TAG, "downloadStock: " + key);
     }
 
     // after returning from StockDownloaderAsyncTask above
     // add a stock to the database
     // and to the stocklist to display it
-    public void insertStock(Stock s) {
-        Log.d(TAG, "insertStock: before checking contains");
-        // simply check if the array list contains
-        // that stock. but you need to implement
-        // equals method in the stock class
-        if(stockList.contains(s)) {
-            Log.d(TAG, "insertStock: stocklist contains " + s.getCompanyName());
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setIcon(R.drawable.ic_baseline_warning_24px);
-            builder.setTitle("Duplicate Stock");
-            builder.setMessage("Stock Symbol " + s.getSymbol() + " is already displayed");
+    public void insertStock(Stock s, int code) {
+        //Log.d(TAG, "insertStock: before checking contains");
+        switch (code) {
+            case ADD_CODE:
+                // simply check if the array list contains
+                // that stock. but you need to implement
+                // equals method in the stock class
+                if(stockList.contains(s)) {
+                    Log.d(TAG, "insertStock: stocklist contains " + s.getCompanyName());
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setIcon(R.drawable.ic_baseline_warning_24px);
+                    builder.setTitle("Duplicate Stock");
+                    builder.setMessage("Stock Symbol " + s.getSymbol() + " is already displayed");
 
-            AlertDialog dialog = builder.create();
-            dialog.show();
-        }
-        else {
-            Log.d(TAG, "insertStock: stocklist does not contain " + s.getCompanyName());
-            stockList.add(0, s);
-            Collections.sort(stockList, new Sortbyname());
-            databaseHandler.addStock(s);
-            stockAdapter.notifyDataSetChanged();
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
+                else {
+                    Log.d(TAG, "insertStock: stocklist does not contain " + s.getCompanyName());
+                    stockList.add(0, s);
+                    Collections.sort(stockList, new Sortbyname());
+                    databaseHandler.addStock(s);
+                    stockAdapter.notifyDataSetChanged();
+                }
+                break;
+            case UPDATE_CODE:
+                stockList.remove(s);
+                stockList.add(0, s);
+                Collections.sort(stockList, new Sortbyname());
+                stockAdapter.notifyDataSetChanged();
+                break;
         }
     }
 
