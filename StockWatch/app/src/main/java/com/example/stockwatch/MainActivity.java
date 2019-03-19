@@ -215,50 +215,44 @@ public class MainActivity extends AppCompatActivity
             builder.setMessage("Please enter a Stock Symbol:");
             builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    // - cannot set the String input to be final
-                    // or else the input is an empty string
-                    // when I call downloadStock()
-                    // final String input = et.getText().toString().toUpperCase();
-                    // - I should get the input after they press okay and not
-                    // outside the onClick or else the input will be an empty string
                     input = et.getText().toString().toUpperCase();
-                    /*
-                     Get matching symbols/names from NameDownloader
-                     Did you Get a Stock result?
-                     */
-                    /*   key:value
-                    *    "AAPL":"Apple Inc."
-                    *    input = apple or Apple or a messed up one like APple
-                    *    containsValue(obj) -> obj must be an exact match
-                    *    so in this case it must be exactly "Apple Inc."
-                    *    how to make apple -> Apple Inc.
-                    * */
                     Log.d(TAG, "onClick addStock input: " + input);
+
+                    // num_of_chars needs to be more than the number of characters displayed when
+                    // multiple stocks are found
+                    final String[] sArray = new String[30];
+                    int i = 0;
+
                     for (Map.Entry<String, String> e : sData.entrySet()) {
-                        if (e.getValue().contains(input)) {
-                            Log.d(TAG, "onClick searching values for key " + e.getKey() + " and value " + e.getValue());
-                            downloadStock(e.getKey(), Integer.toString(ADD_CODE));
-                            return;
+                        if (e.getKey().startsWith(input) || e.getValue().split(" ")[0].startsWith(input)) {
+                            Log.d(TAG, "Results "+ i + ": " + e.getKey() + " " + e.getValue());
+                            sArray[i] = e.getKey() + " - " + e.getValue();
+                            i++;
                         }
                     }
-                    if (sData.containsKey(input)) {
-                        // ONE Stock
-                        // Use selected symbol to execute StockDownloader AsyncTask
-                        downloadStock(input, Integer.toString(ADD_CODE));
+                    // One stock found
+                    if(i == 1) {
+                        Log.d(TAG, "One found");
+                        // its a key
+                        if(sData.containsKey(input)) {
+                            // Use selected symbol to execute StockDownloader AsyncTask
+                            downloadStock(input, Integer.toString(ADD_CODE));
+                        }
+                        else {
+                            // its a value
+                            downloadStock(sArray[0].split(" ")[0], Integer.toString(ADD_CODE));
+                        }
                     }
-                    // No Stock Found
+                    // Multiple stocks found
+                    else if (i > 1) {
+                        Log.d(TAG, "Multiple found");
+                        multipleResults(sArray);
+                    }
+                    // No stock found
                     else {
+                        Log.d(TAG, "Nothing found");
                         noStockFound();
                     }
-                    // need another case to get the key
-                    // of the value and then input it to
-                    // downloadStock because downloadStock
-                    // takes in a symbol as input and not
-                    // a value as it will be downloading
-                    // information with the wrong URL
-                    // thus we need to implement a getKey function
-                    // sData.containsValue("apple")
-                    // sData.containsValue("Apple Inc.")
                 }
             });
             builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -270,8 +264,6 @@ public class MainActivity extends AppCompatActivity
             AlertDialog dialog = builder.create();
             dialog.show();
         }
-        // No Network Connection
-        // Show Error Dialog
         else {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("No Network Connection");
@@ -282,6 +274,31 @@ public class MainActivity extends AppCompatActivity
         }
 
         return false;
+    }
+
+    public void multipleResults(final String[] sArray) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Make a selection");
+        // Set the builder to display the string array as a selectable
+        // list, and add the "onClick" for when a selection is made
+        builder.setItems(sArray, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                // make sArray[which] to a String by sArray[which].toString
+                // then split it to get the first index which is the symbol of the company
+                Toast.makeText(MainActivity.this, "You selected: " + sArray[which].toString().split(" ")[0], Toast.LENGTH_SHORT).show();
+                downloadStock(sArray[which].toString().split(" ")[0], Integer.toString(ADD_CODE));
+            }
+        });
+
+        builder.setNegativeButton("Nevermind", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                Toast.makeText(MainActivity.this, "You changed your mind!", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
+        AlertDialog dialog = builder.create();
+
+        dialog.show();
     }
 
     // get the key given a value
