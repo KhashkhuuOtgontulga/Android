@@ -1,0 +1,110 @@
+package com.example.rewards;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+public class EditActivity extends AppCompatActivity {
+
+    private TextView username;
+    private EditText password;
+    private EditText first_name;
+    private EditText last_name;
+    private EditText administrator_flag;
+    private EditText department;
+    private EditText position;
+    private EditText story;
+
+    public static final String extraName = "DATA HOLDER";
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_edit);
+
+        username = findViewById(R.id.nonEdit);
+        password = findViewById(R.id.passEdit);
+        first_name = findViewById(R.id.firstNameEdit);
+        last_name = findViewById(R.id.lastNameEdit);
+        department = findViewById(R.id.departmentEdit);
+        position = findViewById(R.id.positionEdit);
+        story = findViewById(R.id.storyEdit);
+
+        Intent intent = getIntent();
+
+        UserProfile dh = (UserProfile) intent.getSerializableExtra("EDIT");
+
+        username.setText(dh.getUsername());
+        password.setText("(" + dh.getUsername() + ")");
+        first_name.setText(dh.getFirst_name());
+        last_name.setText(dh.getLast_name());
+        department.setText(dh.getDepartment());
+        position.setText(dh.getPosition());
+        story.setText(dh.getStory());
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.editprofile_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.saveField:
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setIcon(R.drawable.logo);
+                builder.setTitle("Save Changes?");
+                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        UserProfile up = new UserProfile(first_name.getText().toString(),
+                                last_name.getText().toString(),
+                                username.getText().toString(),
+                                "Chicago, Illinois",
+                                0,
+                                department.getText().toString(),
+                                position.getText().toString(),
+                                1000,
+                                story.getText().toString());
+                        makeCustomToast(EditActivity.this, Toast.LENGTH_LONG);
+                        Intent data = new Intent(); // Used to hold results data to be returned to original activity
+                        data.putExtra(extraName, up); // Better be Serializable!
+                        setResult(RESULT_OK, data);
+                        finish(); // This closes the current activity, returning us to the original activity
+
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+    public static void makeCustomToast(Context context, int time) {
+        Toast toast = Toast.makeText(context, "User Update Successful", time);
+        View toastView = toast.getView();
+        toastView.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
+        TextView tv = toastView.findViewById(android.R.id.message);
+        tv.setPadding(250, 100, 250, 100);
+        tv.setTextColor(Color.WHITE);
+        toast.show();
+    }
+}

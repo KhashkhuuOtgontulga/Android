@@ -13,7 +13,6 @@ public class StockViewHolder extends RecyclerView.ViewHolder{
     public TextView latestPriceField;
     public TextView changeField;
     public TextView changePercentField;
-    public TextView directionField;
 
     public StockViewHolder(@NonNull View itemView) {
         super(itemView);
