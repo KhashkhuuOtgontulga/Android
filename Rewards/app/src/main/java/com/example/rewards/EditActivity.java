@@ -8,6 +8,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,8 +28,11 @@ public class EditActivity extends AppCompatActivity {
     private EditText department;
     private EditText position;
     private EditText story;
+    private TextView charCountText;
 
     public static final String extraName = "DATA HOLDER";
+    public static int MAX_CHARS = 360;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +46,7 @@ public class EditActivity extends AppCompatActivity {
         department = findViewById(R.id.departmentEdit);
         position = findViewById(R.id.positionEdit);
         story = findViewById(R.id.storyEdit);
+        charCountText = findViewById(R.id.counter2);
 
         Intent intent = getIntent();
 
@@ -52,6 +59,35 @@ public class EditActivity extends AppCompatActivity {
         department.setText(dh.getDepartment());
         position.setText(dh.getPosition());
         story.setText(dh.getStory());
+
+        story.setFilters(new InputFilter[]{new InputFilter.LengthFilter(MAX_CHARS)});
+        addTextListener();
+    }
+
+    private void addTextListener() {
+        story.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Nothing to do here
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+                // Nothing to do here
+                String countText = "(" + 0 + " of " + MAX_CHARS + ")";
+                charCountText.setText(countText);
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+                int len = s.toString().length();
+                String countText = "(" + len + " of " + MAX_CHARS + ")";
+                charCountText.setText(countText);
+            }
+        });
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
