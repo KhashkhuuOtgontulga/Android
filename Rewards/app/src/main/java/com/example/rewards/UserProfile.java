@@ -3,21 +3,25 @@ package com.example.rewards;
 import java.io.Serializable;
 
 public class UserProfile implements Serializable {
+    private String username;
+    private String password;
     private String first_name;
     private String last_name;
-    private String username;
+    private int points_to_award;
+    private String department;
+    private String story;
+    private String position;
+    private boolean administrator_flag;
     private String location;
     private int points_awarded;
-    private String department;
-    private String position;
-    private int points_to_award;
-    private String story;
 
-    public UserProfile(String first_name, String last_name, String username, String location, int points_awarded, String department, String position, int points_to_award, String story) {
+    public UserProfile(String first_name, String last_name, String username, String password, String location, boolean administrator_flag, int points_awarded, String department, String position, int points_to_award, String story) {
         this.first_name = first_name;
         this.last_name = last_name;
         this.username = username;
+        this.password = password;
         this.location = location;
+        this.administrator_flag = administrator_flag;
         this.points_awarded = points_awarded;
         this.department = department;
         this.position = position;
@@ -49,12 +53,28 @@ public class UserProfile implements Serializable {
         this.username = username;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public String getLocation() {
         return location;
     }
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public boolean isAdministrator_flag() {
+        return administrator_flag;
+    }
+
+    public void setAdministrator_flag(boolean administrator_flag) {
+        this.administrator_flag = administrator_flag;
     }
 
     public int getPoints_awarded() {

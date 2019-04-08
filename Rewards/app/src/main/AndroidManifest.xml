@@ -5,6 +5,8 @@
 
     <dist:module dist:instant="true" />
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
@@ -18,10 +20,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".EditActivity"></activity>
-        <activity android:name=".Profile" />
-        <activity android:name=".CreateProfile" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".Activities.AwardActivity"></activity>
+        <activity android:name=".Activities.LeaderboardActivity" />
+        <activity
+            android:name=".Activities.EditProfileActivity"
+            android:label="Edit Profile" />
+        <activity
+            android:name=".Activities.ProfileActivity"
+            android:label="Your Profile" />
+        <activity
+            android:name=".Activities.CreateProfileActivity"
+            android:label="Create Profile" />
+        <activity android:name=".Activities.LoginActivity">
             <intent-filter>
                 <action
                     android:name="android.intent.action.MAIN"

@@ -1,11 +1,8 @@
-package com.example.rewards;
+package com.example.scoreboard;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -14,10 +11,4 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
     }
-
-    public void createProfile(View v) {
-        Intent intent = new Intent(this, CreateProfile.class);
-        startActivity(intent);
-    }
-
 }

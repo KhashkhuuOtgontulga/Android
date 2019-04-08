@@ -1,5 +1,6 @@
-package com.example.rewards;
+package com.example.rewards.Activities;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,17 +15,21 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class EditActivity extends AppCompatActivity {
+import com.example.rewards.R;
+import com.example.rewards.UserProfile;
+
+public class EditProfileActivity extends AppCompatActivity {
 
     private TextView username;
     private EditText password;
     private EditText first_name;
     private EditText last_name;
-    private EditText administrator_flag;
+    private CheckBox administrator_flag;
     private EditText department;
     private EditText position;
     private EditText story;
@@ -43,6 +48,7 @@ public class EditActivity extends AppCompatActivity {
         password = findViewById(R.id.passEdit);
         first_name = findViewById(R.id.firstNameEdit);
         last_name = findViewById(R.id.lastNameEdit);
+        administrator_flag = findViewById(R.id.administrator2);
         department = findViewById(R.id.departmentEdit);
         position = findViewById(R.id.positionEdit);
         story = findViewById(R.id.storyEdit);
@@ -56,12 +62,17 @@ public class EditActivity extends AppCompatActivity {
         password.setText("(" + dh.getUsername() + ")");
         first_name.setText(dh.getFirst_name());
         last_name.setText(dh.getLast_name());
+        administrator_flag.setChecked(dh.isAdministrator_flag());
         department.setText(dh.getDepartment());
         position.setText(dh.getPosition());
         story.setText(dh.getStory());
 
         story.setFilters(new InputFilter[]{new InputFilter.LengthFilter(MAX_CHARS)});
         addTextListener();
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowHomeEnabled(true);
+        actionBar.setIcon(R.drawable.arrow_with_logo);
     }
 
     private void addTextListener() {
@@ -107,13 +118,15 @@ public class EditActivity extends AppCompatActivity {
                         UserProfile up = new UserProfile(first_name.getText().toString(),
                                 last_name.getText().toString(),
                                 username.getText().toString(),
+                                password.getText().toString(),
                                 "Chicago, Illinois",
+                                administrator_flag.isChecked(),
                                 0,
                                 department.getText().toString(),
                                 position.getText().toString(),
                                 1000,
                                 story.getText().toString());
-                        makeCustomToast(EditActivity.this, Toast.LENGTH_LONG);
+                        makeCustomToast(EditProfileActivity.this, Toast.LENGTH_LONG);
                         Intent data = new Intent(); // Used to hold results data to be returned to original activity
                         data.putExtra(extraName, up); // Better be Serializable!
                         setResult(RESULT_OK, data);

@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Multi Notes</string>
+    <string name="_2019_khashkhuu_otgontulga">2019, Khashkhuu Otgontulga</string>
+    <string name="version_1_0">Version 1.0</string>
+    <string name="multi_notes">Multi Notes</string>
+    <string name="about">about</string>
+    <string name="note">note</string>
+    <string name="textview2">TextView</string>
+
+    <string name="encoding">UTF-8</string>
+    <string name="no_file">No Notes File Present</string>
+    <string name="saved">Product Saved!</string>
+    <string name="file_name">note.json</string>
+    <string name="textview">TextView</string>
+</resources>

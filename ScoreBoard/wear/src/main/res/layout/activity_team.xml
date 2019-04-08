@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.wear.widget.BoxInsetLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/boxInsetLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dark_grey"
+    android:padding="@dimen/box_inset_layout_padding"
+    tools:context=".TeamActivity"
+    tools:deviceIds="wear">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black">
+
+        <TextView
+            android:id="@+id/teamView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="44dp"
+            android:layout_marginTop="32dp"
+            android:text="@string/home"
+            android:textAlignment="center"
+            android:textColor="@color/ambient_mode_text"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/soloView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/guest"
+            android:textAlignment="center"
+            android:textColor="@color/ambient_mode_text"
+            app:layout_constraintBaseline_toBaselineOf="@+id/teamView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/teamView" />
+
+        <TextView
+            android:id="@+id/youView"
+            android:layout_width="51dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="24dp"
+            android:onClick="addHome"
+            android:text="0"
+            android:textAlignment="center"
+            android:textColor="@color/dark_red"
+            android:textSize="30sp"
+            app:layout_constraintEnd_toEndOf="@+id/teamView"
+            app:layout_constraintStart_toStartOf="@+id/teamView"
+            app:layout_constraintTop_toBottomOf="@+id/teamView" />
+
+        <TextView
+            android:id="@+id/guest"
+            android:layout_width="53dp"
+            android:layout_height="40dp"
+            android:onClick="addGuest"
+            android:text="0"
+            android:textAlignment="center"
+            android:textColor="@color/dark_red"
+            android:textSize="30sp"
+            app:layout_constraintBaseline_toBaselineOf="@+id/youView"
+            app:layout_constraintEnd_toEndOf="@+id/soloView"
+            app:layout_constraintStart_toStartOf="@+id/soloView" />
+
+        <Button
+            android:id="@+id/reset"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="16dp"
+            android:background="@color/ambient_mode_text"
+            android:onClick="resetPoints"
+            android:text="@string/reset"
+            android:textColor="@color/dark_blue"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/youView" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.wear.widget.BoxInsetLayout>

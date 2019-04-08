@@ -14,7 +14,7 @@
         android:scrollbarAlwaysDrawHorizontalTrack="false"
         android:scrollbarAlwaysDrawVerticalTrack="false"
         android:scrollbars="vertical"
-        tools:context=".Profile">
+        tools:context=".Activities.ProfileActivity">
 
         <TextView
             android:id="@+id/nameProfile"
@@ -75,11 +75,9 @@
             android:id="@+id/imageProfile"
             android:layout_width="203dp"
             android:layout_height="261dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/locationProfile"
-            app:srcCompat="@drawable/default_photo" />
+            app:srcCompat="@drawable/default_photo"
+            tools:layout_editor_absoluteX="8dp"
+            tools:layout_editor_absoluteY="111dp" />
 
         <TextView
             android:id="@+id/pointsAwardedProfile"

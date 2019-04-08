@@ -1,5 +1,6 @@
-package com.example.rewards;
+package com.example.rewards.Activities;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,21 +18,27 @@ import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
+import android.util.Base64;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.rewards.AsyncTasks.CreateProfileAPIAsyncTask;
+import com.example.rewards.R;
+import com.example.rewards.UserProfile;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.Locale;
 
-public class CreateProfile extends AppCompatActivity {
+public class CreateProfileActivity extends AppCompatActivity {
 
     private int REQUEST_IMAGE_GALLERY = 1;
     private int REQUEST_IMAGE_CAPTURE = 2;
@@ -42,14 +49,17 @@ public class CreateProfile extends AppCompatActivity {
     private EditText password;
     private EditText first_name;
     private EditText last_name;
-    private EditText administrator_flag;
+    private CheckBox administrator_flag;
     private EditText department;
     private EditText position;
     private EditText story;
-    private TextView charCountText;
 
+    private TextView charCountText;
     private ImageView imageView;
     private File currentImageFile;
+    private static final String TAG = "CreateProfileActivity";
+
+    //private LeaderboardActivity leaderboardActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +70,8 @@ public class CreateProfile extends AppCompatActivity {
         password = findViewById(R.id.passEdit);
         first_name = findViewById(R.id.firstNameEdit);
         last_name = findViewById(R.id.lastName);
+
+        administrator_flag = findViewById(R.id.administrator);
         department = findViewById(R.id.departmentEdit);
         position = findViewById(R.id.positionEdit);
         story = findViewById(R.id.story);
@@ -72,6 +84,12 @@ public class CreateProfile extends AppCompatActivity {
 
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowHomeEnabled(true);
+        actionBar.setIcon(R.drawable.arrow_with_logo);
+
+        //leaderboardActivity = new LeaderboardActivity();
     }
 
     private void addTextListener() {
@@ -114,20 +132,25 @@ public class CreateProfile extends AppCompatActivity {
                 builder.setTitle("Save Changes?");
                 builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+
                         UserProfile up = new UserProfile(first_name.getText().toString(),
                                 last_name.getText().toString(),
                                 username.getText().toString(),
+                                password.getText().toString(),
                                 "Chicago, Illinois",
+                                administrator_flag.isChecked(),
                                 0,
                                 department.getText().toString(),
                                 position.getText().toString(),
-                                1000,
+                                        1000,
                                 story.getText().toString());
-
-                        Intent intent = new Intent(CreateProfile.this, Profile.class);
-                        intent.putExtra(extraName, up);
+                        createProfile(up);
+                        // add the user profile to the database
+                        // then start the login activity
+                        Intent intent = new Intent(CreateProfileActivity.this, ProfileActivity.class);
+                        intent.putExtra(extraName, up); // Better be Serializable!
+                        makeCustomToast(CreateProfileActivity.this, Toast.LENGTH_LONG);
                         startActivity(intent);
-                        makeCustomToast(CreateProfile.this, Toast.LENGTH_LONG);
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -142,6 +165,20 @@ public class CreateProfile extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void createProfile(UserProfile up) {
+        /*Bitmap origBitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        origBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object
+        byte[] b = baos.toByteArray();
+
+        String encodedfile = Base64.encodeToString(b, Base64.DEFAULT);*/
+        Log.d(TAG, "createProfile activity and method: ");
+        new CreateProfileAPIAsyncTask(this).execute("A20379665",
+                up.getUsername(), up.getPassword(), up.getFirst_name(), up.getLast_name(),
+                "", up.getDepartment(), up.getStory(), up.getPosition(),
+                Boolean.toString(up.isAdministrator_flag()), up.getLocation(), "");
     }
 
     public void pickOption(final View w) {

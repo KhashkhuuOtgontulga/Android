@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
-    tools:context=".MainActivity">
+    tools:context=".Activities.LoginActivity">
 
     <ImageView
         android:id="@+id/imageView"
@@ -13,7 +13,7 @@
         android:layout_height="90dp"
         android:layout_marginTop="104dp"
         android:layout_marginBottom="32dp"
-        app:layout_constraintBottom_toTopOf="@+id/editText"
+        app:layout_constraintBottom_toTopOf="@+id/userText"
         app:layout_constraintEnd_toStartOf="@+id/imageView2"
         app:layout_constraintHorizontal_bias="0.47"
         app:layout_constraintStart_toStartOf="parent"
@@ -32,7 +32,7 @@
         app:srcCompat="@drawable/name_image" />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/userText"
         android:layout_width="266dp"
         android:layout_height="41dp"
         android:layout_marginStart="8dp"
@@ -43,12 +43,12 @@
         android:hint="Username"
         android:inputType="textPersonName"
         android:textCursorDrawable="@color/colorPrimary"
-        app:layout_constraintBottom_toTopOf="@+id/editText2"
+        app:layout_constraintBottom_toTopOf="@+id/passText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
-        android:id="@+id/editText2"
+        android:id="@+id/passText"
         android:layout_width="0dp"
         android:layout_height="41dp"
         android:layout_marginBottom="16dp"
@@ -58,9 +58,9 @@
         android:inputType="textPassword"
         android:textCursorDrawable="@color/colorPrimary"
         app:layout_constraintBottom_toTopOf="@+id/button"
-        app:layout_constraintEnd_toEndOf="@+id/editText"
+        app:layout_constraintEnd_toEndOf="@+id/userText"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/editText" />
+        app:layout_constraintStart_toStartOf="@+id/userText" />
 
     <CheckBox
         android:id="@+id/checkBox"
@@ -68,6 +68,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
         android:buttonTint="@color/colorPrimary"
+        android:onClick="itemClicked"
         android:text="Remember My Credentials"
         android:textAlignment="center"
         android:textColor="@color/colorPrimary"
@@ -99,10 +100,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
+        android:onClick="login"
         android:text="login"
         android:textColor="@color/colorPrimary"
         app:layout_constraintBottom_toTopOf="@+id/checkBox"
-        app:layout_constraintEnd_toEndOf="@+id/editText2"
-        app:layout_constraintStart_toStartOf="@+id/editText2" />
+        app:layout_constraintEnd_toEndOf="@+id/passText"
+        app:layout_constraintStart_toStartOf="@+id/passText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

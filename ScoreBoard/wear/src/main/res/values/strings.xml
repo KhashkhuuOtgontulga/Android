@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">ScoreBoard</string>
+    <!--
+    This string is used for square devices and overridden by hello_world in
+    values-round/strings.xml for round devices.
+    -->
+    <string name="hello_world">Hello Square World!</string>
+    <string name="title_activity_winner">WinnerActivity</string>
+    <string name="_1">-1</string>
+    <string name="home">Home</string>
+    <string name="guest">Guest</string>
+    <string name="title_activity_solo">SoloActivity</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_team">title_activity_team</string>
+    <string name="team">Team</string>
+    <string name="solo">Solo</string>
+    <string name="reset">Reset</string>
+</resources>
