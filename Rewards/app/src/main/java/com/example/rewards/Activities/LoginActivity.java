@@ -116,9 +116,9 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    public void sendResults(String s) {
+    public void sendResults(String s) throws JSONException {
         Log.d(TAG, "login going to the profile: " + s);
-        /*JSONObject json = new JSONObject(s);
+        JSONObject json = new JSONObject(s);
         UserProfile up = new UserProfile(json.getString("firstName"),
                 json.getString("lastName"),
                 json.getString("username"),
@@ -132,6 +132,6 @@ public class LoginActivity extends AppCompatActivity {
                 json.getString("story"));
         Intent intent = new Intent(this, ProfileActivity.class);
         intent.putExtra(extraName, up); // Better be Serializable!
-        startActivity(intent);*/
+        startActivity(intent);
     }
 }

@@ -81,6 +81,7 @@ public class CreateProfileActivity extends AppCompatActivity {
         addTextListener();
 
         imageView = findViewById(R.id.profileImage);
+        imageView.setImageResource(R.drawable.login_people);
 
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
@@ -168,17 +169,17 @@ public class CreateProfileActivity extends AppCompatActivity {
     }
 
     private void createProfile(UserProfile up) {
-        /*Bitmap origBitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+        Bitmap origBitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         origBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object
         byte[] b = baos.toByteArray();
 
-        String encodedfile = Base64.encodeToString(b, Base64.DEFAULT);*/
+        String encodedfile = Base64.encodeToString(b, Base64.DEFAULT);
         Log.d(TAG, "createProfile activity and method: ");
         new CreateProfileAPIAsyncTask(this).execute("A20379665",
                 up.getUsername(), up.getPassword(), up.getFirst_name(), up.getLast_name(),
                 "", up.getDepartment(), up.getStory(), up.getPosition(),
-                Boolean.toString(up.isAdministrator_flag()), up.getLocation(), "");
+                Boolean.toString(up.isAdministrator_flag()), up.getLocation(), encodedfile);
     }
 
     public void pickOption(final View w) {

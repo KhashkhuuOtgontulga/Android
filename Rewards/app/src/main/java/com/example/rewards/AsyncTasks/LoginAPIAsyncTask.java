@@ -39,7 +39,11 @@ public class LoginAPIAsyncTask extends AsyncTask<String, Void, String> {
             Log.d(TAG, "login profile error: " + connectionResult);
         else
             Log.d(TAG, "login profile success: " + connectionResult);
-        loginActivity.sendResults(connectionResult);
+        try {
+            loginActivity.sendResults(connectionResult);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
