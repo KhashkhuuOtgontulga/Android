@@ -1,13 +1,15 @@
 package com.example.rewards.AsyncTasks;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.example.rewards.Activities.LeaderboardActivity;
+import com.example.rewards.Activities.CreateProfileActivity;
+import com.example.rewards.Activities.ProfileActivity;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -19,22 +21,24 @@ import java.net.URL;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 
-public class GetAllProfilesAPIAyncTask extends AsyncTask<String, Integer, String> {
-
-    private static final String TAG = "GetAllProfiles";
+public class DeleteProfileAPIAsyncTask extends AsyncTask<String, Integer, String> {
+    private static final String TAG = "DeleteAPIAyncTask";
     private static final String baseUrl =
             "http://inspirationrewardsapi-env.6mmagpm2pv.us-east-2.elasticbeanstalk.com";
-    private static final String loginEndPoint ="/allprofiles";
+    private static final String loginEndPoint ="/profiles";
     @SuppressLint("StaticFieldLeak")
-    private LeaderboardActivity leaderboardActivity;
+    private ProfileActivity profileActivity;
 
-    public GetAllProfilesAPIAyncTask(LeaderboardActivity leaderboardActivity) {
-        this.leaderboardActivity = leaderboardActivity;
+    public DeleteProfileAPIAsyncTask(ProfileActivity pa) {
+        profileActivity = pa;
     }
 
     @Override
     protected void onPostExecute(String connectionResult) {
-        leaderboardActivity.printProfiles(connectionResult);
+        if (connectionResult.contains("error")) // If there is "error" in the results...
+            Log.d(TAG, "create profile error: " + connectionResult);
+        else
+            Log.d(TAG, "create profile success: " + connectionResult);
     }
 
     @Override
@@ -42,13 +46,18 @@ public class GetAllProfilesAPIAyncTask extends AsyncTask<String, Integer, String
         String stuId = strings[0];
         String uName = strings[1];
         String pswd = strings[2];
+        String dName = strings[3];
 
         try {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("studentId", stuId);
-            jsonObject.put("username", uName);
-            jsonObject.put("password", pswd);
+            JSONObject uProfile = new JSONObject();
+            uProfile.put("studentId", stuId);
+            uProfile.put("username", uName);
+            uProfile.put("password", pswd);
 
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("admin", uProfile);
+            jsonObject.put("username", dName);
+            Log.d(TAG, "delete profile doInBackground: " + jsonObject.toString());
             return doAPICall(jsonObject);
 
         } catch (Exception e) {
@@ -62,14 +71,14 @@ public class GetAllProfilesAPIAyncTask extends AsyncTask<String, Integer, String
         BufferedReader reader = null;
 
         try {
-
+            Log.d(TAG, "createProfile doAPICall: ");
             String urlString = baseUrl + loginEndPoint;  // Build the full URL
 
             Uri uri = Uri.parse(urlString);    // Convert String url to URI
             URL url = new URL(uri.toString()); // Convert URI to URL
 
             connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("POST");  // POST - others might use PUT, DELETE, GET
+            connection.setRequestMethod("DELETE");  // POST - others might use PUT, DELETE, GET
 
             // Set the Content-Type and Accept properties to use JSON data
             connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
@@ -87,7 +96,7 @@ public class GetAllProfilesAPIAyncTask extends AsyncTask<String, Integer, String
 
             // If successful (HTTP_OK)
             if (responseCode == HTTP_OK) {
-
+                Log.d(TAG, "createProfile doAPICall success: ");
                 // Read the results - use connection's getInputStream
                 reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 String line;
@@ -99,6 +108,7 @@ public class GetAllProfilesAPIAyncTask extends AsyncTask<String, Integer, String
                 return result.toString();
 
             } else {
+                Log.d(TAG, "createProfile doAPICall fail: ");
                 // Not HTTP_OK - some error occurred - use connection's getErrorStream
                 reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
                 String line;

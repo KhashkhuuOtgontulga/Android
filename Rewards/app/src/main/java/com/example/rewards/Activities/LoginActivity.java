@@ -133,5 +133,6 @@ public class LoginActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ProfileActivity.class);
         intent.putExtra(extraName, up); // Better be Serializable!
         startActivity(intent);
+        Log.d(TAG, "supposed to start the activity: ");
     }
 }

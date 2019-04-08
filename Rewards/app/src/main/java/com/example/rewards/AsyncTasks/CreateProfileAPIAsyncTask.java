@@ -46,11 +46,6 @@ public class CreateProfileAPIAsyncTask extends AsyncTask<String, Integer, String
     }
 
     @Override
-    protected void onPreExecute() {
-        Toast.makeText(createProfileActivity, "Loading Profile Data...", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
     protected void onPostExecute(String connectionResult) {
         if (connectionResult.contains("error")) // If there is "error" in the results...
             Log.d(TAG, "create profile error: " + connectionResult);

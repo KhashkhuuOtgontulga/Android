@@ -23,7 +23,7 @@
         app:layout_constraintVertical_bias="1.0" />
 
     <ImageView
-        android:id="@+id/profileImage"
+        android:id="@+id/imageProfile2"
         android:layout_width="173dp"
         android:layout_height="255dp"
         android:layout_marginStart="8dp"
@@ -46,7 +46,7 @@
         android:inputType="textPersonName"
         android:textColorHint="@color/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/profileImage"
+        app:layout_constraintStart_toEndOf="@+id/imageProfile2"
         app:layout_constraintTop_toTopOf="parent" />
 
     <CheckBox
@@ -86,7 +86,7 @@
         android:hint="Enter Last Name"
         android:inputType="textPersonName"
         android:textColorHint="@color/colorPrimary"
-        app:layout_constraintBottom_toBottomOf="@+id/profileImage"
+        app:layout_constraintBottom_toBottomOf="@+id/imageProfile2"
         app:layout_constraintEnd_toEndOf="@+id/firstNameEdit"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/firstNameEdit"
@@ -101,7 +101,7 @@
         android:text="Department:"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profileImage" />
+        app:layout_constraintTop_toBottomOf="@+id/imageProfile2" />
 
     <TextView
         android:id="@+id/textView6"
@@ -201,10 +201,10 @@
         android:id="@+id/imageView3"
         android:layout_width="93dp"
         android:layout_height="86dp"
-        app:layout_constraintBottom_toBottomOf="@+id/profileImage"
-        app:layout_constraintEnd_toEndOf="@+id/profileImage"
-        app:layout_constraintStart_toStartOf="@+id/profileImage"
-        app:layout_constraintTop_toTopOf="@+id/profileImage"
+        app:layout_constraintBottom_toBottomOf="@+id/imageProfile2"
+        app:layout_constraintEnd_toEndOf="@+id/imageProfile2"
+        app:layout_constraintStart_toStartOf="@+id/imageProfile2"
+        app:layout_constraintTop_toTopOf="@+id/imageProfile2"
         app:srcCompat="@android:drawable/ic_menu_add" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

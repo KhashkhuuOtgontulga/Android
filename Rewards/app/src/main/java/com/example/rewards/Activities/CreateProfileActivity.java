@@ -80,8 +80,8 @@ public class CreateProfileActivity extends AppCompatActivity {
         story.setFilters(new InputFilter[]{new InputFilter.LengthFilter(MAX_CHARS)});
         addTextListener();
 
-        imageView = findViewById(R.id.profileImage);
-        imageView.setImageResource(R.drawable.login_people);
+        imageView = findViewById(R.id.imageProfile2);
+        imageView.setImageResource(R.drawable.default_photo);
 
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
@@ -146,11 +146,11 @@ public class CreateProfileActivity extends AppCompatActivity {
                                         1000,
                                 story.getText().toString());
                         createProfile(up);
+                        makeCustomToast(CreateProfileActivity.this, Toast.LENGTH_LONG);
                         // add the user profile to the database
                         // then start the login activity
                         Intent intent = new Intent(CreateProfileActivity.this, ProfileActivity.class);
                         intent.putExtra(extraName, up); // Better be Serializable!
-                        makeCustomToast(CreateProfileActivity.this, Toast.LENGTH_LONG);
                         startActivity(intent);
                     }
                 });

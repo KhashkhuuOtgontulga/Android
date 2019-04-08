@@ -23,7 +23,7 @@
         app:layout_constraintVertical_bias="1.0" />
 
     <ImageView
-        android:id="@+id/profileImage"
+        android:id="@+id/imageProfile2"
         android:layout_width="173dp"
         android:layout_height="255dp"
         android:layout_marginStart="8dp"
@@ -49,15 +49,14 @@
         android:id="@+id/firstNameEdit"
         android:layout_width="0dp"
         android:layout_height="35dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="8dp"
         android:background="#99dddddd"
         android:hint="Enter First Name"
         android:inputType="textPersonName"
         android:textColorHint="@color/colorPrimary"
-        app:layout_constraintEnd_toEndOf="@+id/administrator"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/administrator"
-        app:layout_constraintTop_toBottomOf="@+id/administrator" />
+        app:layout_constraintEnd_toEndOf="@+id/administrator2"
+        app:layout_constraintStart_toStartOf="@+id/administrator2"
+        app:layout_constraintTop_toBottomOf="@+id/administrator2" />
 
     <EditText
         android:id="@+id/lastNameEdit"
@@ -69,7 +68,7 @@
         android:hint="Enter Last Name"
         android:inputType="textPersonName"
         android:textColorHint="@color/colorPrimary"
-        app:layout_constraintBottom_toBottomOf="@+id/profileImage"
+        app:layout_constraintBottom_toBottomOf="@+id/imageProfile2"
         app:layout_constraintEnd_toEndOf="@+id/firstNameEdit"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/firstNameEdit"
@@ -84,7 +83,7 @@
         android:text="Department:"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profileImage" />
+        app:layout_constraintTop_toBottomOf="@+id/imageProfile2" />
 
     <TextView
         android:id="@+id/textView6"
@@ -189,17 +188,17 @@
         android:background="#99dddddd"
         android:textColorHint="@color/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/profileImage"
+        app:layout_constraintStart_toEndOf="@+id/imageProfile2"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/imageView5"
         android:layout_width="79dp"
         android:layout_height="84dp"
-        app:layout_constraintBottom_toBottomOf="@+id/profileImage"
-        app:layout_constraintEnd_toEndOf="@+id/profileImage"
-        app:layout_constraintStart_toStartOf="@+id/profileImage"
-        app:layout_constraintTop_toTopOf="@+id/profileImage"
+        app:layout_constraintBottom_toBottomOf="@+id/imageProfile2"
+        app:layout_constraintEnd_toEndOf="@+id/imageProfile2"
+        app:layout_constraintStart_toStartOf="@+id/imageProfile2"
+        app:layout_constraintTop_toTopOf="@+id/imageProfile2"
         app:srcCompat="@android:drawable/ic_menu_add" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

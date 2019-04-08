@@ -7,24 +7,35 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
+import android.util.Base64;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.rewards.AsyncTasks.CreateProfileAPIAsyncTask;
+import com.example.rewards.AsyncTasks.LoginAPIAsyncTask;
+import com.example.rewards.AsyncTasks.UpdateProfileAPIAsyncTask;
 import com.example.rewards.R;
 import com.example.rewards.UserProfile;
 
+import java.io.ByteArrayOutputStream;
+
 public class EditProfileActivity extends AppCompatActivity {
 
+    private static final String TAG = "EditProfileActivity";
     private TextView username;
     private EditText password;
     private EditText first_name;
@@ -34,6 +45,7 @@ public class EditProfileActivity extends AppCompatActivity {
     private EditText position;
     private EditText story;
     private TextView charCountText;
+    private ImageView imageView;
 
     public static final String extraName = "DATA HOLDER";
     public static int MAX_CHARS = 360;
@@ -53,19 +65,21 @@ public class EditProfileActivity extends AppCompatActivity {
         position = findViewById(R.id.positionEdit);
         story = findViewById(R.id.storyEdit);
         charCountText = findViewById(R.id.counter2);
+        imageView = findViewById(R.id.imageProfile2);
 
         Intent intent = getIntent();
 
         UserProfile dh = (UserProfile) intent.getSerializableExtra("EDIT");
 
         username.setText(dh.getUsername());
-        password.setText("(" + dh.getUsername() + ")");
+        password.setText(dh.getPassword());
         first_name.setText(dh.getFirst_name());
         last_name.setText(dh.getLast_name());
         administrator_flag.setChecked(dh.isAdministrator_flag());
         department.setText(dh.getDepartment());
         position.setText(dh.getPosition());
         story.setText(dh.getStory());
+        imageView.setImageResource(R.drawable.default_photo);
 
         story.setFilters(new InputFilter[]{new InputFilter.LengthFilter(MAX_CHARS)});
         addTextListener();
@@ -126,12 +140,12 @@ public class EditProfileActivity extends AppCompatActivity {
                                 position.getText().toString(),
                                 1000,
                                 story.getText().toString());
+                        updateProfile(up);
                         makeCustomToast(EditProfileActivity.this, Toast.LENGTH_LONG);
                         Intent data = new Intent(); // Used to hold results data to be returned to original activity
                         data.putExtra(extraName, up); // Better be Serializable!
                         setResult(RESULT_OK, data);
                         finish(); // This closes the current activity, returning us to the original activity
-
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -147,6 +161,21 @@ public class EditProfileActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    public void updateProfile(UserProfile up) {
+        Bitmap origBitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        origBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object
+        byte[] b = baos.toByteArray();
+
+        String encodedfile = Base64.encodeToString(b, Base64.DEFAULT);
+        Log.d(TAG, "updateProfile password: " + up.getPassword());
+        new UpdateProfileAPIAsyncTask(this).execute("A20379665",
+                up.getUsername(), up.getPassword(), up.getFirst_name(), up.getLast_name(),
+                "", up.getDepartment(), up.getStory(), up.getPosition(),
+                Boolean.toString(up.isAdministrator_flag()), up.getLocation(), encodedfile);
+    }
+
     public static void makeCustomToast(Context context, int time) {
         Toast toast = Toast.makeText(context, "User Update Successful", time);
         View toastView = toast.getView();

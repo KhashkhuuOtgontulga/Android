@@ -4,10 +4,12 @@ import android.annotation.SuppressLint;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.example.rewards.Activities.LeaderboardActivity;
+import com.example.rewards.Activities.EditProfileActivity;
+import com.example.rewards.Activities.LoginActivity;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -19,22 +21,25 @@ import java.net.URL;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 
-public class GetAllProfilesAPIAyncTask extends AsyncTask<String, Integer, String> {
-
-    private static final String TAG = "GetAllProfiles";
+public class UpdateProfileAPIAsyncTask extends AsyncTask<String, Void, String> {
+    private static final String TAG = "UpdateProfile";
     private static final String baseUrl =
             "http://inspirationrewardsapi-env.6mmagpm2pv.us-east-2.elasticbeanstalk.com";
-    private static final String loginEndPoint ="/allprofiles";
+    private static final String loginEndPoint ="/profiles";
     @SuppressLint("StaticFieldLeak")
-    private LeaderboardActivity leaderboardActivity;
+    private EditProfileActivity editActivity;
 
-    public GetAllProfilesAPIAyncTask(LeaderboardActivity leaderboardActivity) {
-        this.leaderboardActivity = leaderboardActivity;
+    public UpdateProfileAPIAsyncTask(EditProfileActivity editActivity) {
+        this.editActivity = editActivity;
     }
+
 
     @Override
     protected void onPostExecute(String connectionResult) {
-        leaderboardActivity.printProfiles(connectionResult);
+        if (connectionResult.contains("error")) // If there is "error" in the results...
+            Log.d(TAG, "update profile error: " + connectionResult);
+        else
+            Log.d(TAG, "update profile success: " + connectionResult);
     }
 
     @Override
@@ -42,12 +47,34 @@ public class GetAllProfilesAPIAyncTask extends AsyncTask<String, Integer, String
         String stuId = strings[0];
         String uName = strings[1];
         String pswd = strings[2];
+        String fName = strings[3];
+        String lName = strings[4];
+        int pToAward = 1000;
+        String dep = strings[6];
+        String story = strings[7];
+        String position = strings[8];
+        String temp2 = strings[9];
+        boolean admin = Boolean.parseBoolean(temp2);
+        String location = strings[10];
+        String iBytes = strings[11];
+        JSONArray rRecords = new JSONArray();
 
+        Log.d(TAG, "update async task doInBackground: ");
         try {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("studentId", stuId);
             jsonObject.put("username", uName);
             jsonObject.put("password", pswd);
+            jsonObject.put("firstName", fName);
+            jsonObject.put("lastName", lName);
+            jsonObject.put("pointsToAward", pToAward);
+            jsonObject.put("department", dep);
+            jsonObject.put("story", story);
+            jsonObject.put("position", position);
+            jsonObject.put("admin", admin);
+            jsonObject.put("location", location);
+            jsonObject.put("imageBytes", iBytes);
+            jsonObject.put("rewardRecords", rRecords);
 
             return doAPICall(jsonObject);
 
@@ -62,14 +89,14 @@ public class GetAllProfilesAPIAyncTask extends AsyncTask<String, Integer, String
         BufferedReader reader = null;
 
         try {
-
+            Log.d(TAG, "update doAPICall: ");
             String urlString = baseUrl + loginEndPoint;  // Build the full URL
 
             Uri uri = Uri.parse(urlString);    // Convert String url to URI
             URL url = new URL(uri.toString()); // Convert URI to URL
 
             connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("POST");  // POST - others might use PUT, DELETE, GET
+            connection.setRequestMethod("PUT");  // POST - others might use PUT, DELETE, GET
 
             // Set the Content-Type and Accept properties to use JSON data
             connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");

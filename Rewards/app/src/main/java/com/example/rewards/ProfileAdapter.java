@@ -38,6 +38,15 @@ public class ProfileAdapter extends RecyclerView.Adapter <ProfileViewHolder> {
         holder.jobField.setText(oneItem.getPosition() + ", " + oneItem.getDepartment());
         holder.pointField.setText(String.valueOf(oneItem.getPoints_awarded()));
         //holder.imageField.setText(oneItem.getDate());
+        /*if (oneItem.getFirst_name().toLowerCase().trim().equals("volkswagen")) {
+            holder.make.setTextColor(getResources().getColor(R.color.colorAccent));
+            holder.model.setTextColor(getResources().getColor(R.color.colorAccent));
+            holder.year.setTextColor(getResources().getColor(R.color.colorAccent));
+        } else {
+            holder.make.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+            holder.model.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+            holder.year.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+        }*/
     }
 
     @Override
