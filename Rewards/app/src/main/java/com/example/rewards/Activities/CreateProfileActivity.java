@@ -73,7 +73,7 @@ public class CreateProfileActivity extends AppCompatActivity {
 
         administrator_flag = findViewById(R.id.administrator);
         department = findViewById(R.id.departmentEdit);
-        position = findViewById(R.id.positionEdit);
+        position = findViewById(R.id.positionAward);
         story = findViewById(R.id.story);
         charCountText = findViewById(R.id.counter);
 

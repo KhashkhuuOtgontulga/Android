@@ -33,16 +33,8 @@ public class UserProfile implements Serializable {
         return first_name;
     }
 
-    public void setFirst_name(String first_name) {
-        this.first_name = first_name;
-    }
-
     public String getLast_name() {
         return last_name;
-    }
-
-    public void setLast_name(String last_name) {
-        this.last_name = last_name;
     }
 
     public String getUsername() {
@@ -65,32 +57,16 @@ public class UserProfile implements Serializable {
         return location;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
     public boolean isAdministrator_flag() {
         return administrator_flag;
-    }
-
-    public void setAdministrator_flag(boolean administrator_flag) {
-        this.administrator_flag = administrator_flag;
     }
 
     public int getPoints_awarded() {
         return points_awarded;
     }
 
-    public void setPoints_awarded(int points_awarded) {
-        this.points_awarded = points_awarded;
-    }
-
     public String getDepartment() {
         return department;
-    }
-
-    public void setDepartment(String department) {
-        this.department = department;
     }
 
     public String getPosition() {
@@ -105,16 +81,8 @@ public class UserProfile implements Serializable {
         return points_to_award;
     }
 
-    public void setPoints_to_award(int points_to_award) {
-        this.points_to_award = points_to_award;
-    }
-
     public String getStory() {
         return story;
-    }
-
-    public void setStory(String story) {
-        this.story = story;
     }
 }
 

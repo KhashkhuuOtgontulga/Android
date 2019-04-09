@@ -25,8 +25,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.rewards.AsyncTasks.CreateProfileAPIAsyncTask;
-import com.example.rewards.AsyncTasks.LoginAPIAsyncTask;
 import com.example.rewards.AsyncTasks.UpdateProfileAPIAsyncTask;
 import com.example.rewards.R;
 import com.example.rewards.UserProfile;
@@ -62,7 +60,7 @@ public class EditProfileActivity extends AppCompatActivity {
         last_name = findViewById(R.id.lastNameEdit);
         administrator_flag = findViewById(R.id.administrator2);
         department = findViewById(R.id.departmentEdit);
-        position = findViewById(R.id.positionEdit);
+        position = findViewById(R.id.positionAward);
         story = findViewById(R.id.storyEdit);
         charCountText = findViewById(R.id.counter2);
         imageView = findViewById(R.id.imageProfile2);

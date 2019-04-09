@@ -114,7 +114,7 @@
         app:layout_constraintTop_toTopOf="@+id/textView5" />
 
     <EditText
-        android:id="@+id/positionEdit"
+        android:id="@+id/positionAward"
         android:layout_width="0dp"
         android:layout_height="35dp"
         android:background="#99dddddd"

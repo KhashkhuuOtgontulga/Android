@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -48,21 +47,21 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        nameProfile = findViewById(R.id.nameProfile);
+        nameProfile = findViewById(R.id.nameAward);
         usernameProfile = findViewById(R.id.usernameProfile);
         locationProfile = findViewById(R.id.locationProfile);
-        numberPointsAwarded = findViewById(R.id.numberPointsAwarded);
-        departmentTextProfile = findViewById(R.id.departmentTextProfile);
-        positionTextProfile = findViewById(R.id.positionTextProfile);
+        numberPointsAwarded = findViewById(R.id.numberPointsAwardedAward);
+        departmentTextProfile = findViewById(R.id.departmentTextAward);
+        positionTextProfile = findViewById(R.id.positionTextAward);
         numberPointsProfile = findViewById(R.id.numberPointsProfile);
-        storyTextProfile = findViewById(R.id.storyTextProfile);
-        imageView = findViewById(R.id.imageProfile);
+        storyTextProfile = findViewById(R.id.storyTextAward);
+        imageView = findViewById(R.id.imageAward);
 
         Intent intent = getIntent();
 
         dh = (UserProfile) intent.getSerializableExtra(CreateProfileActivity.extraName);
 
-        nameProfile.setText(dh.getFirst_name() + ", " + dh.getLast_name());
+        nameProfile.setText(dh.getLast_name() + ", " + dh.getFirst_name());
         usernameProfile.setText("(" + dh.getUsername() + ")");
         locationProfile.setText(dh.getLocation());
         numberPointsAwarded.setText(String.valueOf(dh.getPoints_awarded()));

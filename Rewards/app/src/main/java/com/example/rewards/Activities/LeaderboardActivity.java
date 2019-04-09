@@ -31,6 +31,7 @@ public final class LeaderboardActivity extends AppCompatActivity
     private RecyclerView recyclerView;
     private ProfileAdapter profileAdapter;
     private static final String TAG = "LeaderboardActivity";
+    private UserProfile up;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +49,7 @@ public final class LeaderboardActivity extends AppCompatActivity
 
         Intent intent = getIntent();
 
-        UserProfile up = (UserProfile) intent.getSerializableExtra("LEADER");
+        up = (UserProfile) intent.getSerializableExtra("LEADER");
 
         // load the profiles from the AWS database and display the profiles
         new GetAllProfilesAPIAyncTask(this).execute("A20379665", up.getUsername(), up.getPassword());
@@ -56,7 +57,12 @@ public final class LeaderboardActivity extends AppCompatActivity
 
     @Override
     public void onClick(View v) {
+        int pos = recyclerView.getChildLayoutPosition(v);
+        UserProfile temp = profileList.get(pos);
         Toast.makeText(this, "Going to the awards activity", Toast.LENGTH_LONG).show();
+        Intent i = new Intent(this, AwardActivity.class);
+        i.putExtra("AWARD", temp);
+        startActivity(i);
     }
 
     public void initiateData(ArrayList<UserProfile> upList) {
@@ -75,6 +81,8 @@ public final class LeaderboardActivity extends AppCompatActivity
         }
 
         ArrayList<UserProfile> userProfilesList = new ArrayList<>();
+        if (jsonArr == null)
+            return;
 
         for (int i = 0; i < jsonArr.length(); i++)
         {
@@ -97,8 +105,6 @@ public final class LeaderboardActivity extends AppCompatActivity
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
-            System.out.println(jsonObj);
         }
         initiateData(userProfilesList);
     }
