@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.example.rewards.Activities.AwardActivity;
 import com.example.rewards.Activities.EditProfileActivity;
 import com.example.rewards.Activities.LoginActivity;
 
@@ -27,19 +28,21 @@ public class UpdateProfileAPIAsyncTask extends AsyncTask<String, Void, String> {
             "http://inspirationrewardsapi-env.6mmagpm2pv.us-east-2.elasticbeanstalk.com";
     private static final String loginEndPoint ="/profiles";
     @SuppressLint("StaticFieldLeak")
-    private EditProfileActivity editActivity;
+    private EditProfileActivity editProfileActivity;
+
 
     public UpdateProfileAPIAsyncTask(EditProfileActivity editActivity) {
-        this.editActivity = editActivity;
+        editProfileActivity = editActivity;
     }
+
 
 
     @Override
     protected void onPostExecute(String connectionResult) {
         if (connectionResult.contains("error")) // If there is "error" in the results...
-            Log.d(TAG, "update profile error: " + connectionResult);
+            editProfileActivity.sendResults(true, connectionResult);
         else
-            Log.d(TAG, "update profile success: " + connectionResult);
+            editProfileActivity.sendResults(false, connectionResult);
     }
 
     @Override

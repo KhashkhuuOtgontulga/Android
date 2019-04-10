@@ -1,6 +1,7 @@
 package com.example.rewards.Activities;
 
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -116,23 +117,47 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    public void sendResults(String s) throws JSONException {
-        Log.d(TAG, "login going to the profile: " + s);
-        JSONObject json = new JSONObject(s);
-        UserProfile up = new UserProfile(json.getString("firstName"),
-                json.getString("lastName"),
-                json.getString("username"),
-                json.getString("password"),
-                json.getString("location"),
-                Boolean.parseBoolean(json.getString("admin")),
-                0,
-                json.getString("department"),
-                json.getString("position"),
-                Integer.parseInt(json.getString("pointsToAward")),
-                json.getString("story"));
-        Intent intent = new Intent(this, ProfileActivity.class);
-        intent.putExtra(extraName, up); // Better be Serializable!
-        startActivity(intent);
-        Log.d(TAG, "supposed to start the activity: ");
+    public void sendResults(boolean error, String s) {
+        if (error) {
+            try {
+                JSONObject errorDetails = new JSONObject(s);
+                JSONObject jsonObject = new JSONObject(errorDetails.getString("errordetails"));
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(jsonObject.getString("status"));
+                builder.setMessage(jsonObject.getString("message"));
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            JSONObject json = null;
+            try {
+                json = new JSONObject(s);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            UserProfile up = null;
+            try {
+                up = new UserProfile(json.getString("firstName"),
+                        json.getString("lastName"),
+                        json.getString("username"),
+                        json.getString("password"),
+                        json.getString("location"),
+                        Boolean.parseBoolean(json.getString("admin")),
+                        0,
+                        json.getString("department"),
+                        json.getString("position"),
+                        Integer.parseInt(json.getString("pointsToAward")),
+                        json.getString("story"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            Intent intent = new Intent(this, ProfileActivity.class);
+            intent.putExtra(extraName, up); // Better be Serializable!
+            startActivity(intent);
+            Log.d(TAG, "supposed to start the activity: ");
+        }
     }
 }

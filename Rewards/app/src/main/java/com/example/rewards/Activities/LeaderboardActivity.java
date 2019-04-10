@@ -1,5 +1,7 @@
 package com.example.rewards.Activities;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,6 +34,8 @@ public final class LeaderboardActivity extends AppCompatActivity
     private ProfileAdapter profileAdapter;
     private static final String TAG = "LeaderboardActivity";
     private UserProfile up;
+    private static final int ADD_CODE = 1;
+    private int pos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +51,10 @@ public final class LeaderboardActivity extends AppCompatActivity
         /* show the recyclerview */
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowHomeEnabled(true);
+        actionBar.setIcon(R.drawable.arrow_with_logo);
+
         Intent intent = getIntent();
 
         up = (UserProfile) intent.getSerializableExtra("LEADER");
@@ -57,55 +65,96 @@ public final class LeaderboardActivity extends AppCompatActivity
 
     @Override
     public void onClick(View v) {
-        int pos = recyclerView.getChildLayoutPosition(v);
+        pos = recyclerView.getChildLayoutPosition(v);
         UserProfile temp = profileList.get(pos);
         Toast.makeText(this, "Going to the awards activity", Toast.LENGTH_LONG).show();
         Intent i = new Intent(this, AwardActivity.class);
-        i.putExtra("AWARD", temp);
-        startActivity(i);
+        i.putExtra("TARGET", temp);
+        i.putExtra("SOURCE", up);
+        startActivityForResult(i, ADD_CODE);
     }
 
     public void initiateData(ArrayList<UserProfile> upList) {
         profileList.addAll(upList);
-        Collections.sort(profileList, new SortByPoints());
+        Collections.sort(profileList, Collections.reverseOrder(new SortByPoints()));
         profileAdapter.notifyDataSetChanged();
     }
 
-    public void printProfiles(String s) {
-        Log.d(TAG, "printProfiles: " + s);
-        JSONArray jsonArr = null;
-        try {
-            jsonArr = new JSONArray(s);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        ArrayList<UserProfile> userProfilesList = new ArrayList<>();
-        if (jsonArr == null)
-            return;
-
-        for (int i = 0; i < jsonArr.length(); i++)
-        {
-            JSONObject jsonObj = null;
+    public void printProfiles(boolean error, String connectionResult) {
+        if (error) {
             try {
-                jsonObj = jsonArr.getJSONObject(i);
-                Log.d(TAG, "printProfiles: " + jsonObj.toString());
-                userProfilesList.add(
-                        new UserProfile(jsonObj.getString("firstName"),
-                                jsonObj.getString("lastName"),
-                                jsonObj.getString("username"),
-                                jsonObj.getString("password"),
-                                jsonObj.getString("location"),
-                                Boolean.parseBoolean(jsonObj.getString("admin")),
-                                0,
-                                jsonObj.getString("department"),
-                                jsonObj.getString("position"),
-                                Integer.parseInt(jsonObj.getString("pointsToAward")),
-                                jsonObj.getString("story")));
+                JSONObject errorDetails = new JSONObject(connectionResult);
+                JSONObject jsonObject = new JSONObject(errorDetails.getString("errordetails"));
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(jsonObject.getString("status"));
+                builder.setMessage(jsonObject.getString("message"));
+                AlertDialog dialog = builder.create();
+                dialog.show();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
-        initiateData(userProfilesList);
+        else {
+            JSONArray jsonArrProfiles = null;
+            try {
+                jsonArrProfiles = new JSONArray(connectionResult);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            ArrayList<UserProfile> userProfilesList = new ArrayList<>();
+            if (jsonArrProfiles == null)
+                return;
+
+            for (int i = 0; i < jsonArrProfiles.length(); i++)
+            {
+                JSONObject profile;
+                try {
+                    profile = jsonArrProfiles.getJSONObject(i);
+                    int total = 0;
+                    try{
+                        JSONArray rewards = new JSONArray(profile.getString("rewards"));
+                        Log.d(TAG, "rewards: " + rewards.toString());
+                        for (int j = 0; j < rewards.length(); j++) {
+                            JSONObject giver = rewards.getJSONObject(j);
+                            total += Integer.parseInt(giver.getString("value"));
+                        }
+                        Log.d(TAG, "total: " + Integer.toString(total));
+                    } catch (JSONException e) {
+                        // do nothing
+                    }
+                    //Log.d(TAG, "rewards: " + profile.getString("rewards"));
+                    Log.d(TAG, "printProfiles: " + profile.toString());
+                    userProfilesList.add(
+                            new UserProfile(profile.getString("firstName"),
+                                    profile.getString("lastName"),
+                                    profile.getString("username"),
+                                    profile.getString("password"),
+                                    profile.getString("location"),
+                                    Boolean.parseBoolean(profile.getString("admin")),
+                                    total,
+                                    profile.getString("department"),
+                                    profile.getString("position"),
+                                    Integer.parseInt(profile.getString("pointsToAward")),
+                                    profile.getString("story")));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            initiateData(userProfilesList);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == ADD_CODE) {
+            if (resultCode == RESULT_OK) {
+                UserProfile dh = (UserProfile) data.getSerializableExtra("OBJECT");
+                profileList.remove(pos);
+                profileList.add(pos, dh);
+                Collections.sort(profileList, Collections.<UserProfile>reverseOrder(new SortByPoints()));
+                profileAdapter.notifyDataSetChanged();
+            }
+        }
     }
 }

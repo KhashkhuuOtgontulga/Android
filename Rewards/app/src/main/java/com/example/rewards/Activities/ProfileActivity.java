@@ -60,7 +60,7 @@ public class ProfileActivity extends AppCompatActivity {
         Intent intent = getIntent();
 
         dh = (UserProfile) intent.getSerializableExtra(CreateProfileActivity.extraName);
-
+        Log.d(TAG, "profile activity onCreate: ");
         nameProfile.setText(dh.getLast_name() + ", " + dh.getFirst_name());
         usernameProfile.setText("(" + dh.getUsername() + ")");
         locationProfile.setText(dh.getLocation());

@@ -33,6 +33,9 @@ import com.example.rewards.AsyncTasks.CreateProfileAPIAsyncTask;
 import com.example.rewards.R;
 import com.example.rewards.UserProfile;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -59,7 +62,7 @@ public class CreateProfileActivity extends AppCompatActivity {
     private File currentImageFile;
     private static final String TAG = "CreateProfileActivity";
 
-    //private LeaderboardActivity leaderboardActivity;
+    private UserProfile up;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +70,7 @@ public class CreateProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_createprofile);
 
         username = findViewById(R.id.usernameProfile);
-        password = findViewById(R.id.passEdit);
+        password = findViewById(R.id.passProfile);
         first_name = findViewById(R.id.firstNameEdit);
         last_name = findViewById(R.id.lastName);
 
@@ -134,7 +137,7 @@ public class CreateProfileActivity extends AppCompatActivity {
                 builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
 
-                        UserProfile up = new UserProfile(first_name.getText().toString(),
+                        up = new UserProfile(first_name.getText().toString(),
                                 last_name.getText().toString(),
                                 username.getText().toString(),
                                 password.getText().toString(),
@@ -146,12 +149,6 @@ public class CreateProfileActivity extends AppCompatActivity {
                                         1000,
                                 story.getText().toString());
                         createProfile(up);
-                        makeCustomToast(CreateProfileActivity.this, Toast.LENGTH_LONG);
-                        // add the user profile to the database
-                        // then start the login activity
-                        Intent intent = new Intent(CreateProfileActivity.this, ProfileActivity.class);
-                        intent.putExtra(extraName, up); // Better be Serializable!
-                        startActivity(intent);
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -280,5 +277,29 @@ public class CreateProfileActivity extends AppCompatActivity {
         tv.setPadding(250, 100, 250, 100);
         tv.setTextColor(Color.WHITE);
         toast.show();
+    }
+
+    public void errorMessage(boolean error, String connectionResult) {
+        if (error) {
+            try {
+                JSONObject errorDetails = new JSONObject(connectionResult);
+                JSONObject jsonObject = new JSONObject(errorDetails.getString("errordetails"));
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(jsonObject.getString("status"));
+                builder.setMessage(jsonObject.getString("message"));
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            makeCustomToast(CreateProfileActivity.this, Toast.LENGTH_LONG);
+            // add the user profile to the database
+            // then start the login activity
+            Intent intent = new Intent(CreateProfileActivity.this, ProfileActivity.class);
+            intent.putExtra(extraName, up); // Better be Serializable!
+            startActivity(intent);
+        }
     }
 }

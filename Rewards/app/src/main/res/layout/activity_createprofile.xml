@@ -57,10 +57,10 @@
         android:buttonTint="@color/colorPrimary"
         android:text="Administrator User"
         android:textColor="@color/colorPrimary"
-        app:layout_constraintEnd_toEndOf="@+id/passEdit"
+        app:layout_constraintEnd_toEndOf="@+id/passProfile"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/passEdit"
-        app:layout_constraintTop_toBottomOf="@+id/passEdit" />
+        app:layout_constraintStart_toStartOf="@+id/passProfile"
+        app:layout_constraintTop_toBottomOf="@+id/passProfile" />
 
     <EditText
         android:id="@+id/firstNameEdit"
@@ -183,7 +183,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
     <EditText
-        android:id="@+id/passEdit"
+        android:id="@+id/passProfile"
         android:layout_width="0dp"
         android:layout_height="35dp"
         android:layout_marginTop="24dp"

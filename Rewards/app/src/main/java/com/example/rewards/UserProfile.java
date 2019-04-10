@@ -65,6 +65,14 @@ public class UserProfile implements Serializable {
         return points_awarded;
     }
 
+    public void setPoints_to_award(int points_to_award) {
+        this.points_to_award = points_to_award;
+    }
+
+    public void setPoints_awarded(int points_awarded) {
+        this.points_awarded = points_awarded;
+    }
+
     public String getDepartment() {
         return department;
     }

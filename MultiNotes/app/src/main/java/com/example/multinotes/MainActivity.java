@@ -144,7 +144,6 @@ public class MainActivity  extends AppCompatActivity
           }
     }
 
-
     private Note loadFile() {
         Log.d(TAG, "loadFile: Loading JSON File");
         SimpleDateFormat sdf;

@@ -29,6 +29,9 @@ import com.example.rewards.AsyncTasks.UpdateProfileAPIAsyncTask;
 import com.example.rewards.R;
 import com.example.rewards.UserProfile;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 
 public class EditProfileActivity extends AppCompatActivity {
@@ -45,9 +48,10 @@ public class EditProfileActivity extends AppCompatActivity {
     private TextView charCountText;
     private ImageView imageView;
 
+    private UserProfile up;
+
     public static final String extraName = "DATA HOLDER";
     public static int MAX_CHARS = 360;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +59,7 @@ public class EditProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit);
 
         username = findViewById(R.id.nonEdit);
-        password = findViewById(R.id.passEdit);
+        password = findViewById(R.id.passProfile);
         first_name = findViewById(R.id.firstNameEdit);
         last_name = findViewById(R.id.lastNameEdit);
         administrator_flag = findViewById(R.id.administrator2);
@@ -127,7 +131,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 builder.setTitle("Save Changes?");
                 builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        UserProfile up = new UserProfile(first_name.getText().toString(),
+                        up = new UserProfile(first_name.getText().toString(),
                                 last_name.getText().toString(),
                                 username.getText().toString(),
                                 password.getText().toString(),
@@ -139,11 +143,6 @@ public class EditProfileActivity extends AppCompatActivity {
                                 1000,
                                 story.getText().toString());
                         updateProfile(up);
-                        makeCustomToast(EditProfileActivity.this, Toast.LENGTH_LONG);
-                        Intent data = new Intent(); // Used to hold results data to be returned to original activity
-                        data.putExtra(extraName, up); // Better be Serializable!
-                        setResult(RESULT_OK, data);
-                        finish(); // This closes the current activity, returning us to the original activity
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -182,5 +181,28 @@ public class EditProfileActivity extends AppCompatActivity {
         tv.setPadding(250, 100, 250, 100);
         tv.setTextColor(Color.WHITE);
         toast.show();
+    }
+
+    public void sendResults(boolean error, String connectionResult) {
+        if (error) {
+            try {
+                JSONObject errorDetails = new JSONObject(connectionResult);
+                JSONObject jsonObject = new JSONObject(errorDetails.getString("errordetails"));
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(jsonObject.getString("status"));
+                builder.setMessage(jsonObject.getString("message"));
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            makeCustomToast(EditProfileActivity.this, Toast.LENGTH_LONG);
+            Intent data = new Intent(); // Used to hold results data to be returned to original activity
+            data.putExtra(extraName, up); // Better be Serializable!
+            setResult(RESULT_OK, data);
+            finish(); // This closes the current activity, returning us to the original activity
+        }
     }
 }

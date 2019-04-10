@@ -36,14 +36,9 @@ public class LoginAPIAsyncTask extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String connectionResult) {
         if (connectionResult.contains("error")) // If there is "error" in the results...
-            Log.d(TAG, "login profile error: " + connectionResult);
+            loginActivity.sendResults(true, connectionResult);
         else
-            Log.d(TAG, "login profile success: " + connectionResult);
-        try {
-            loginActivity.sendResults(connectionResult);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+            loginActivity.sendResults(false, connectionResult);
     }
 
     @Override

@@ -21,16 +21,20 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".Activities.AwardActivity"></activity>
-        <activity android:name=".Activities.LeaderboardActivity" />
+        <activity android:name=".Activities.LeaderboardActivity"
+            android:label="Inspiration Leaderboard"
+            />
         <activity
             android:name=".Activities.EditProfileActivity"
-            android:label="Edit Profile" />
+            android:label="Edit Profile"
+            />
         <activity
             android:name=".Activities.ProfileActivity"
             android:label="Your Profile" />
         <activity
             android:name=".Activities.CreateProfileActivity"
-            android:label="Create Profile" />
+            android:label="Create Profile"
+            />
         <activity android:name=".Activities.LoginActivity">
             <intent-filter>
                 <action

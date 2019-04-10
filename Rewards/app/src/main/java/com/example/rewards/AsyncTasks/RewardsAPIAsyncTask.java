@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.example.rewards.Activities.AwardActivity;
 import com.example.rewards.Activities.CreateProfileActivity;
 import com.example.rewards.Activities.LeaderboardActivity;
 
@@ -27,18 +28,21 @@ public class RewardsAPIAsyncTask extends AsyncTask<String, Integer, String> {
             "http://inspirationrewardsapi-env.6mmagpm2pv.us-east-2.elasticbeanstalk.com";
     private static final String loginEndPoint ="/rewards";
     @SuppressLint("StaticFieldLeak")
-    private LeaderboardActivity leaderboardActivity;
+    private AwardActivity awardActivity;
 
-    public RewardsAPIAsyncTask(LeaderboardActivity la) {
-        leaderboardActivity = la;
+    public RewardsAPIAsyncTask(AwardActivity aA) {
+        awardActivity = aA;
     }
 
     @Override
     protected void onPostExecute(String connectionResult) {
         if (connectionResult.contains("error")) // If there is "error" in the results...
-            Log.d(TAG, "rewards error: " + connectionResult);
+            awardActivity.addData(true, connectionResult);
+            //Log.d(TAG, "reward: " + connectionResult);
         else
-            Log.d(TAG, "rewards success: " + connectionResult);
+            awardActivity.addData(false, connectionResult);
+            //Log.d(TAG, "reward: " + connectionResult);
+
     }
 
     @Override

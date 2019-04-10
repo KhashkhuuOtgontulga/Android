@@ -48,9 +48,9 @@ public class CreateProfileAPIAsyncTask extends AsyncTask<String, Integer, String
     @Override
     protected void onPostExecute(String connectionResult) {
         if (connectionResult.contains("error")) // If there is "error" in the results...
-            Log.d(TAG, "create profile error: " + connectionResult);
+            createProfileActivity.errorMessage(true, connectionResult);
         else
-            Log.d(TAG, "create profile success: " + connectionResult);
+            createProfileActivity.errorMessage(false, connectionResult);
     }
 
     @Override

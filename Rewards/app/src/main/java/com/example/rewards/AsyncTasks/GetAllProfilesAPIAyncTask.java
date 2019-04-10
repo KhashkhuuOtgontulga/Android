@@ -34,7 +34,11 @@ public class GetAllProfilesAPIAyncTask extends AsyncTask<String, Integer, String
 
     @Override
     protected void onPostExecute(String connectionResult) {
-        leaderboardActivity.printProfiles(connectionResult);
+        if (connectionResult.contains("error")) // If there is "error" in the results...
+            leaderboardActivity.printProfiles(true, connectionResult);
+        else
+            leaderboardActivity.printProfiles(false, connectionResult);
+
     }
 
     @Override
