@@ -136,7 +136,8 @@ public final class LeaderboardActivity extends AppCompatActivity
                                     profile.getString("department"),
                                     profile.getString("position"),
                                     Integer.parseInt(profile.getString("pointsToAward")),
-                                    profile.getString("story")));
+                                    profile.getString("story"),
+                                    profile.getString("imageBytes")));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

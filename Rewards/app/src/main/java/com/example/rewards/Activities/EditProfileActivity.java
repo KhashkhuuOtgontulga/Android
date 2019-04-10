@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
@@ -49,6 +50,7 @@ public class EditProfileActivity extends AppCompatActivity {
     private ImageView imageView;
 
     private UserProfile up;
+    private UserProfile dh;
 
     public static final String extraName = "DATA HOLDER";
     public static int MAX_CHARS = 360;
@@ -71,7 +73,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
 
-        UserProfile dh = (UserProfile) intent.getSerializableExtra("EDIT");
+        dh = (UserProfile) intent.getSerializableExtra("EDIT");
 
         username.setText(dh.getUsername());
         password.setText(dh.getPassword());
@@ -81,7 +83,11 @@ public class EditProfileActivity extends AppCompatActivity {
         department.setText(dh.getDepartment());
         position.setText(dh.getPosition());
         story.setText(dh.getStory());
-        imageView.setImageResource(R.drawable.default_photo);
+
+        byte[] imageBytes = Base64.decode(dh.getImage(),  Base64.DEFAULT);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+        imageView.setImageBitmap(bitmap);
+        charCountText.setText("(" + story.getText().length() + " of 360)");
 
         story.setFilters(new InputFilter[]{new InputFilter.LengthFilter(MAX_CHARS)});
         addTextListener();
@@ -137,11 +143,12 @@ public class EditProfileActivity extends AppCompatActivity {
                                 password.getText().toString(),
                                 "Chicago, Illinois",
                                 administrator_flag.isChecked(),
-                                0,
+                                dh.getPoints_awarded(),
                                 department.getText().toString(),
                                 position.getText().toString(),
-                                1000,
-                                story.getText().toString());
+                                dh.getPoints_to_award(),
+                                story.getText().toString(),
+                                dh.getImage());
                         updateProfile(up);
                     }
                 });
@@ -160,17 +167,11 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     public void updateProfile(UserProfile up) {
-        Bitmap origBitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        origBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object
-        byte[] b = baos.toByteArray();
-
-        String encodedfile = Base64.encodeToString(b, Base64.DEFAULT);
         Log.d(TAG, "updateProfile password: " + up.getPassword());
         new UpdateProfileAPIAsyncTask(this).execute("A20379665",
                 up.getUsername(), up.getPassword(), up.getFirst_name(), up.getLast_name(),
                 "", up.getDepartment(), up.getStory(), up.getPosition(),
-                Boolean.toString(up.isAdministrator_flag()), up.getLocation(), encodedfile);
+                Boolean.toString(up.isAdministrator_flag()), up.getLocation(), up.getImage());
     }
 
     public static void makeCustomToast(Context context, int time) {

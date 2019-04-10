@@ -6,7 +6,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -69,7 +72,10 @@ public class ProfileActivity extends AppCompatActivity {
         positionTextProfile.setText(dh.getPosition());
         numberPointsProfile.setText(String.valueOf(dh.getPoints_to_award()));
         storyTextProfile.setText(dh.getStory());
-        imageView.setImageResource(R.drawable.default_photo);
+
+        byte[] imageBytes = Base64.decode(dh.getImage(),  Base64.DEFAULT);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+        imageView.setImageBitmap(bitmap);
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowHomeEnabled(true);

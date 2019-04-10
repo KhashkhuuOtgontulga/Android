@@ -1,5 +1,8 @@
 package com.example.rewards;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +40,9 @@ public class ProfileAdapter extends RecyclerView.Adapter <ProfileViewHolder> {
         holder.nameField.setText(oneItem.getLast_name() + ", " + oneItem.getFirst_name());
         holder.jobField.setText(oneItem.getPosition() + ", " + oneItem.getDepartment());
         holder.pointField.setText(String.valueOf(oneItem.getPoints_awarded()));
-        //holder.imageField.setText(oneItem.getDate());
+        byte[] imageBytes = Base64.decode(oneItem.getImage(),  Base64.DEFAULT);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+        holder.imageField.setImageBitmap(bitmap);
         /*if (oneItem.getFirst_name().toLowerCase().trim().equals("volkswagen")) {
             holder.make.setTextColor(getResources().getColor(R.color.colorAccent));
             holder.model.setTextColor(getResources().getColor(R.color.colorAccent));

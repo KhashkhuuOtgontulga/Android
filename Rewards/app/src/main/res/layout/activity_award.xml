@@ -44,21 +44,6 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/counter3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="(0 of 360)"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@+id/storyAward"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.073"
-            app:layout_constraintStart_toEndOf="@+id/storyAward"
-            app:layout_constraintTop_toTopOf="@+id/storyAward"
-            app:layout_constraintVertical_bias="0.0" />
-
-        <TextView
             android:id="@+id/numberPointsAwardedAward"
             android:layout_width="0dp"
             android:layout_height="31dp"
@@ -175,7 +160,7 @@
         <TextView
             android:id="@+id/rewardText"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
             android:text="Reward points to send: "
@@ -218,16 +203,16 @@
             android:id="@+id/rewardPointsAward"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="16dp"
             android:layout_marginEnd="8dp"
             android:ems="10"
+            android:gravity="top|left"
             android:inputType="number"
             app:layout_constraintBottom_toBottomOf="@+id/rewardText"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/rewardText"
-            app:layout_constraintTop_toTopOf="@+id/rewardText"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintTop_toTopOf="@+id/rewardText" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

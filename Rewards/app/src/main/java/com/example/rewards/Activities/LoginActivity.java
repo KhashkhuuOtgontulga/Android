@@ -150,7 +150,8 @@ public class LoginActivity extends AppCompatActivity {
                         json.getString("department"),
                         json.getString("position"),
                         Integer.parseInt(json.getString("pointsToAward")),
-                        json.getString("story"));
+                        json.getString("story"),
+                        json.getString("imageBytes"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }

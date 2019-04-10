@@ -8,7 +8,7 @@
 
     <TextView
         android:id="@+id/nameField"
-        android:layout_width="232dp"
+        android:layout_width="211dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:layout_marginTop="28dp"
@@ -23,7 +23,7 @@
 
     <TextView
         android:id="@+id/pointField"
-        android:layout_width="44dp"
+        android:layout_width="64dp"
         android:layout_height="45dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="32dp"

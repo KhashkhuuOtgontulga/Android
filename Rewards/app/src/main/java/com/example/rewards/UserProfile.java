@@ -14,8 +14,9 @@ public class UserProfile implements Serializable {
     private boolean administrator_flag;
     private String location;
     private int points_awarded;
+    private String image;
 
-    public UserProfile(String first_name, String last_name, String username, String password, String location, boolean administrator_flag, int points_awarded, String department, String position, int points_to_award, String story) {
+    public UserProfile(String first_name, String last_name, String username, String password, String location, boolean administrator_flag, int points_awarded, String department, String position, int points_to_award, String story, String image) {
         this.first_name = first_name;
         this.last_name = last_name;
         this.username = username;
@@ -27,6 +28,15 @@ public class UserProfile implements Serializable {
         this.position = position;
         this.points_to_award = points_to_award;
         this.story = story;
+        this.image = image;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public String getFirst_name() {
