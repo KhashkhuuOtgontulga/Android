@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
@@ -77,7 +78,9 @@ public class AwardActivity extends AppCompatActivity {
         departmentTextProfileAward.setText(dh.getDepartment());
         positionTextProfileAward.setText(dh.getPosition());
         storyTextAward.setText(dh.getStory());
-        imageView.setImageResource(R.drawable.default_photo);
+        byte[] imageBytes = Base64.decode(dh.getImage(),  Base64.DEFAULT);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+        imageView.setImageBitmap(bitmap);
 
         charCountText = findViewById(R.id.counter4);
         commentTextAward.setFilters(new InputFilter[]{new InputFilter.LengthFilter(MAX_CHARS)});

@@ -42,9 +42,13 @@ public final class LeaderboardActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_leaderboard);
 
+        Intent intent = getIntent();
+
+        up = (UserProfile) intent.getSerializableExtra("LEADER");
+
         recyclerView = findViewById(R.id.recycler);
 
-        profileAdapter = new ProfileAdapter(profileList, this);
+        profileAdapter = new ProfileAdapter(profileList, up, this);
 
         // connect the recyclerView to the adapter
         recyclerView.setAdapter(profileAdapter);
@@ -55,10 +59,6 @@ public final class LeaderboardActivity extends AppCompatActivity
         actionBar.setDisplayShowHomeEnabled(true);
         actionBar.setIcon(R.drawable.arrow_with_logo);
 
-        Intent intent = getIntent();
-
-        up = (UserProfile) intent.getSerializableExtra("LEADER");
-
         // load the profiles from the AWS database and display the profiles
         new GetAllProfilesAPIAyncTask(this).execute("A20379665", up.getUsername(), up.getPassword());
     }
@@ -67,6 +67,9 @@ public final class LeaderboardActivity extends AppCompatActivity
     public void onClick(View v) {
         pos = recyclerView.getChildLayoutPosition(v);
         UserProfile temp = profileList.get(pos);
+        if(temp.getFirst_name().equals(up.getFirst_name())) {
+            return;
+        }
         Toast.makeText(this, "Going to the awards activity", Toast.LENGTH_LONG).show();
         Intent i = new Intent(this, AwardActivity.class);
         i.putExtra("TARGET", temp);

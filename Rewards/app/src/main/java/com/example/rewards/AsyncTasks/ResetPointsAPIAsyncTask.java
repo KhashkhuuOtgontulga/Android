@@ -18,15 +18,15 @@ import java.net.URL;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 
-public class DeleteAllProfileAPIAsyncTask extends AsyncTask<String, Integer, String> {
-    private static final String TAG = "DeleteAllAPIAyncTask";
+public class ResetPointsAPIAsyncTask extends AsyncTask<String, Integer, String> {
+    private static final String TAG = "DeleteAPIAyncTask";
     private static final String baseUrl =
             "http://inspirationrewardsapi-env.6mmagpm2pv.us-east-2.elasticbeanstalk.com";
-    private static final String loginEndPoint ="/allprofiles";
+    private static final String loginEndPoint ="/resetprofiles";
     @SuppressLint("StaticFieldLeak")
     private ProfileActivity profileActivity;
 
-    public DeleteAllProfileAPIAsyncTask(ProfileActivity pa) {
+    public ResetPointsAPIAsyncTask(ProfileActivity pa) {
         profileActivity = pa;
     }
 
@@ -43,19 +43,14 @@ public class DeleteAllProfileAPIAsyncTask extends AsyncTask<String, Integer, Str
         String stuId = strings[0];
         String uName = strings[1];
         String pswd = strings[2];
-        String dName = strings[3];
 
         try {
-            JSONObject uProfile = new JSONObject();
-            uProfile.put("studentId", stuId);
-            uProfile.put("username", uName);
-            uProfile.put("password", pswd);
-
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("admin", uProfile);
-            jsonObject.put("username", dName);
+            jsonObject.put("studentId", stuId);
+            jsonObject.put("username", uName);
+            jsonObject.put("password", pswd);
 
-            Log.d(TAG, "deleteAll async task doInBackground" + jsonObject.toString());
+            Log.d(TAG, "reset profile doInBackground: " + jsonObject.toString());
             return doAPICall(jsonObject);
 
         } catch (Exception e) {
@@ -69,14 +64,14 @@ public class DeleteAllProfileAPIAsyncTask extends AsyncTask<String, Integer, Str
         BufferedReader reader = null;
 
         try {
-            Log.d(TAG, "deleteAll doAPICall: ");
+            Log.d(TAG, "reset doAPICall: ");
             String urlString = baseUrl + loginEndPoint;  // Build the full URL
 
             Uri uri = Uri.parse(urlString);    // Convert String url to URI
             URL url = new URL(uri.toString()); // Convert URI to URL
 
             connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("DELETE");  // POST - others might use PUT, DELETE, GET
+            connection.setRequestMethod("POST");  // POST - others might use PUT, DELETE, GET
 
             // Set the Content-Type and Accept properties to use JSON data
             connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
@@ -94,7 +89,7 @@ public class DeleteAllProfileAPIAsyncTask extends AsyncTask<String, Integer, Str
 
             // If successful (HTTP_OK)
             if (responseCode == HTTP_OK) {
-                Log.d(TAG, "deleteAll doAPICall success: ");
+                Log.d(TAG, "reset doAPICall success: ");
                 // Read the results - use connection's getInputStream
                 reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 String line;
@@ -106,7 +101,7 @@ public class DeleteAllProfileAPIAsyncTask extends AsyncTask<String, Integer, Str
                 return result.toString();
 
             } else {
-                Log.d(TAG, "deleteAll doAPICall fail: ");
+                Log.d(TAG, "reset doAPICall fail: ");
                 // Not HTTP_OK - some error occurred - use connection's getErrorStream
                 reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
                 String line;

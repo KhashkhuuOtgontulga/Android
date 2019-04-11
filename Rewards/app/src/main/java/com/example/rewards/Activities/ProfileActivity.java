@@ -4,23 +4,33 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.rewards.AsyncTasks.DeleteAllProfileAPIAsyncTask;
 import com.example.rewards.AsyncTasks.DeleteProfileAPIAsyncTask;
+import com.example.rewards.AsyncTasks.ResetPointsAPIAsyncTask;
+import com.example.rewards.AsyncTasks.UpdateProfileAPIAsyncTask;
 import com.example.rewards.R;
 import com.example.rewards.UserProfile;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import static android.view.Gravity.CENTER_HORIZONTAL;
 
@@ -36,6 +46,8 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView numberPointsProfile;
     private TextView storyTextProfile;
     private ImageView imageView;
+
+    private ProgressBar progressBar;
 
     private UserProfile dh;
     private int UPDATE_PROFILE = 1;
@@ -73,6 +85,10 @@ public class ProfileActivity extends AppCompatActivity {
         numberPointsProfile.setText(String.valueOf(dh.getPoints_to_award()));
         storyTextProfile.setText(dh.getStory());
 
+        progressBar = findViewById(R.id.progressBar2);
+        progressBar.bringToFront();
+        progressBar.setVisibility(View.GONE);
+
         byte[] imageBytes = Base64.decode(dh.getImage(),  Base64.DEFAULT);
         Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
         imageView.setImageBitmap(bitmap);
@@ -97,9 +113,11 @@ public class ProfileActivity extends AppCompatActivity {
                 return true;
             case R.id.leaderField:
                 //Toast.makeText(this, "Going to the leaderboard", Toast.LENGTH_LONG).show();
+                progressBar.setVisibility(View.VISIBLE);
                 Intent i = new Intent(this, LeaderboardActivity.class);
                 i.putExtra("LEADER", dh);
                 startActivity(i);
+                progressBar.setVisibility(View.GONE);
                 return true;
             case R.id.deleteField:
                 //Toast.makeText(this, "Going to the leaderboard", Toast.LENGTH_LONG).show();
@@ -112,13 +130,13 @@ public class ProfileActivity extends AppCompatActivity {
 
                 builder.setIcon(R.drawable.logo);
                 builder.setTitle("Delete");
-                builder.setMessage("Enter a username to delete: ");
+                builder.setMessage("Enter a username to delete one user or all users or to reset the points: ");
                 builder.setPositiveButton("All Users",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                    input = et.getText().toString();
-                                    Log.d(TAG, "onOptionsItemSelected: " + input);
-                                    deleteAllUsers(input);
+                                input = et.getText().toString();
+                                Log.d(TAG, "onOptionsItemSelected: " + input);
+                                deleteAllUsers(input);
                             }
                         }
                 );
@@ -132,12 +150,12 @@ public class ProfileActivity extends AppCompatActivity {
                             }
                         }
                 );
-                builder.setNeutralButton("Cancel",
+                builder.setNeutralButton("Reset Points",
                         new DialogInterface.OnClickListener()
                         {
                             public void onClick(DialogInterface dialog, int id)
                             {
-                                dialog.dismiss();
+                                resetPoints();
                             }
                         }
                 );
@@ -157,6 +175,10 @@ public class ProfileActivity extends AppCompatActivity {
         new DeleteProfileAPIAsyncTask(this).execute("A20379665", dh.getUsername(), dh.getPassword(), input);
     }
 
+    public void resetPoints() {
+        new ResetPointsAPIAsyncTask(this).execute("A20379665", dh.getUsername(), dh.getPassword());
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == UPDATE_PROFILE) {
@@ -171,7 +193,39 @@ public class ProfileActivity extends AppCompatActivity {
                 positionTextProfile.setText(dh.getPosition());
                 numberPointsProfile.setText(String.valueOf(dh.getPoints_to_award()));
                 storyTextProfile.setText(dh.getStory());
+                byte[] imageBytes = Base64.decode(dh.getImage(),  Base64.DEFAULT);
+                Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+                imageView.setImageBitmap(bitmap);
             }
+        }
+    }
+
+    public static void makeCustomToast(Context context, int time) {
+        Toast toast = Toast.makeText(context, "Success!", time);
+        View toastView = toast.getView();
+        toastView.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
+        TextView tv = toastView.findViewById(android.R.id.message);
+        tv.setPadding(250, 100, 250, 100);
+        tv.setTextColor(Color.WHITE);
+        toast.show();
+    }
+
+    public void sendError(boolean error, String connectionResult) {
+        if (error) {
+            try {
+                JSONObject errorDetails = new JSONObject(connectionResult);
+                JSONObject jsonObject = new JSONObject(errorDetails.getString("errordetails"));
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(jsonObject.getString("status"));
+                builder.setMessage(jsonObject.getString("message"));
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            makeCustomToast(this, Toast.LENGTH_LONG);
         }
     }
 }

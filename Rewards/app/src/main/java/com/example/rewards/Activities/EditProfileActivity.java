@@ -3,7 +3,10 @@ package com.example.rewards.Activities;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,7 +14,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
@@ -34,6 +39,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.Locale;
+
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 public class EditProfileActivity extends AppCompatActivity {
 
@@ -54,6 +65,12 @@ public class EditProfileActivity extends AppCompatActivity {
 
     public static final String extraName = "DATA HOLDER";
     public static int MAX_CHARS = 360;
+
+    private File currentImageFile;
+    private int REQUEST_IMAGE_GALLERY = 1;
+    private int REQUEST_IMAGE_CAPTURE = 2;
+    private static int MY_PHOTO_REQUEST_CODE = 330;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +104,7 @@ public class EditProfileActivity extends AppCompatActivity {
         byte[] imageBytes = Base64.decode(dh.getImage(),  Base64.DEFAULT);
         Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
         imageView.setImageBitmap(bitmap);
+
         charCountText.setText("(" + story.getText().length() + " of 360)");
 
         story.setFilters(new InputFilter[]{new InputFilter.LengthFilter(MAX_CHARS)});
@@ -137,6 +155,13 @@ public class EditProfileActivity extends AppCompatActivity {
                 builder.setTitle("Save Changes?");
                 builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        Bitmap origBitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+
+                        ByteArrayOutputStream bitmapAsByteArrayStream = new ByteArrayOutputStream();
+                        origBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bitmapAsByteArrayStream);
+                        String imgString = Base64.encodeToString(bitmapAsByteArrayStream.toByteArray(), Base64.DEFAULT);
+
+                        Log.d(TAG, "doConvert: Image in Base64 size: " + imgString.length());
                         up = new UserProfile(first_name.getText().toString(),
                                 last_name.getText().toString(),
                                 username.getText().toString(),
@@ -148,7 +173,7 @@ public class EditProfileActivity extends AppCompatActivity {
                                 position.getText().toString(),
                                 dh.getPoints_to_award(),
                                 story.getText().toString(),
-                                dh.getImage());
+                                imgString);
                         updateProfile(up);
                     }
                 });
@@ -205,5 +230,109 @@ public class EditProfileActivity extends AppCompatActivity {
             setResult(RESULT_OK, data);
             finish(); // This closes the current activity, returning us to the original activity
         }
+    }
+
+    public void pickPhoto(final View w) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{
+                            Manifest.permission.READ_EXTERNAL_STORAGE
+                    },
+                    MY_PHOTO_REQUEST_CODE);
+        } else {
+            getPhoto();
+        }
+    }
+
+    public void getPhoto() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setIcon(R.drawable.logo);
+        builder.setTitle("Profile Picture");
+        builder.setMessage("Take picture from: ");
+        builder.setPositiveButton("Camera",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        doCamera();
+                    }
+                }
+        );
+        builder.setNegativeButton("Gallery",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        doGallery();
+                    }
+                }
+        );
+        builder.setNeutralButton("Cancel",
+                new DialogInterface.OnClickListener()
+                {
+                    public void onClick(DialogInterface dialog, int id)
+                    {
+                        dialog.dismiss();
+                    }
+                }
+        );
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    public void doGallery() {
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        photoPickerIntent.setType("image/*");
+        startActivityForResult(photoPickerIntent, REQUEST_IMAGE_GALLERY);
+    }
+
+    public void doCamera() {
+        currentImageFile = new File(getExternalCacheDir(), "appimage_" + System.currentTimeMillis() + ".jpg");
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(currentImageFile));
+        startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == REQUEST_IMAGE_GALLERY && resultCode == RESULT_OK) {
+            try {
+                processGallery(data);
+            } catch (Exception e) {
+                Toast.makeText(this, "onActivityResult: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                e.printStackTrace();
+            }
+        } else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            try {
+                processCamera();
+            } catch (Exception e) {
+                Toast.makeText(this, "onActivityResult: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void processCamera() {
+        Uri selectedImage = Uri.fromFile(currentImageFile);
+        imageView.setImageURI(selectedImage);
+        Bitmap bm = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+
+        currentImageFile.delete();
+    }
+
+    private void processGallery(Intent data) {
+        Uri galleryImageUri = data.getData();
+        if (galleryImageUri == null)
+            return;
+
+        InputStream imageStream = null;
+        try {
+            imageStream = getContentResolver().openInputStream(galleryImageUri);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+        imageView.setImageBitmap(selectedImage);
     }
 }

@@ -1,23 +1,35 @@
 package com.example.rewards.Activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 
 import com.example.rewards.AsyncTasks.LoginAPIAsyncTask;
 import com.example.rewards.R;
 import com.example.rewards.SharedPreference;
 import com.example.rewards.UserProfile;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -26,9 +38,12 @@ public class LoginActivity extends AppCompatActivity {
     private EditText data1;
     private EditText data2;
     public static final String extraName = "DATA HOLDER";
-    //SharedPreferences settings;
-    //SharedPreferences.Editor editor;
-    //private LeaderboardActivity leaderboardActivity;
+
+    private static int MY_LOCATION_REQUEST_CODE = 329;
+    private LocationManager locationManager;
+    private Location currentLocation;
+    private Criteria criteria;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,9 +62,44 @@ public class LoginActivity extends AppCompatActivity {
         data1.setText(prefs.getValue(getString(R.string.data1Key)));
         data2.setText(prefs.getValue(getString(R.string.data2Key)));
 
-        //settings = getSharedPreferences("mysettings", 0);
-        //editor = settings.edit();
-        //leaderboardActivity = new LeaderboardActivity();
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        criteria = new Criteria();
+        criteria.setPowerRequirement(Criteria.POWER_LOW);
+        criteria.setAccuracy(Criteria.ACCURACY_MEDIUM);
+        criteria.setAltitudeRequired(false);
+        criteria.setBearingRequired(false);
+        criteria.setSpeedRequired(false);
+
+        progressBar = findViewById(R.id.progressBar);
+        progressBar.bringToFront();
+        progressBar.setVisibility(View.GONE);
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION )
+                != PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{
+                            Manifest.permission.ACCESS_FINE_LOCATION
+                    },
+                    MY_LOCATION_REQUEST_CODE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(
+            int requestCode, @NonNull
+            String[] permissions, @NonNull
+                    int[] grantResults) {
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == MY_LOCATION_REQUEST_CODE) {
+            if (permissions[0].equals(Manifest.permission.ACCESS_FINE_LOCATION) &&
+                    grantResults[0] == PERMISSION_GRANTED) {
+                return;
+            }
+        }
     }
 
     public void itemClicked(View w) {
@@ -82,6 +132,7 @@ public class LoginActivity extends AppCompatActivity {
         String uName = ((EditText) findViewById(R.id.userText)).getText().toString();
         String pswd = ((EditText) findViewById(R.id.passText)).getText().toString();
         Log.d(TAG, "login clicked: ");
+        progressBar.setVisibility(View.VISIBLE);
         new LoginAPIAsyncTask(this).execute(sId, uName, pswd);
     }
 
@@ -138,6 +189,18 @@ public class LoginActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            int total = 0;
+            try{
+                JSONArray rewards = new JSONArray(json.getString("rewards"));
+                Log.d(TAG, "rewards: " + rewards.toString());
+                for (int j = 0; j < rewards.length(); j++) {
+                    JSONObject giver = rewards.getJSONObject(j);
+                    total += Integer.parseInt(giver.getString("value"));
+                }
+                Log.d(TAG, "total: " + Integer.toString(total));
+            } catch (JSONException e) {
+                // do nothing
+            }
             UserProfile up = null;
             try {
                 up = new UserProfile(json.getString("firstName"),
@@ -146,7 +209,7 @@ public class LoginActivity extends AppCompatActivity {
                         json.getString("password"),
                         json.getString("location"),
                         Boolean.parseBoolean(json.getString("admin")),
-                        0,
+                        total,
                         json.getString("department"),
                         json.getString("position"),
                         Integer.parseInt(json.getString("pointsToAward")),
@@ -160,5 +223,6 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
             Log.d(TAG, "supposed to start the activity: ");
         }
+        progressBar.setVisibility(View.GONE);
     }
 }
