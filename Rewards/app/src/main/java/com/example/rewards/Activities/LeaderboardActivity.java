@@ -43,6 +43,8 @@ public final class LeaderboardActivity extends AppCompatActivity
     private UserProfile up;
     private static final int ADD_CODE = 1;
     private int pos;
+    public static final String extraName = "DATA HOLDER";
+    private UserProfile source;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +92,8 @@ public final class LeaderboardActivity extends AppCompatActivity
         profileList.addAll(upList);
         Collections.sort(profileList, Collections.reverseOrder(new SortByPoints()));
         profileAdapter.notifyDataSetChanged();
+
+        Log.d(TAG, "initiateData added data: ");
     }
 
     public void printProfiles(boolean error, String connectionResult) {
@@ -186,7 +190,17 @@ public final class LeaderboardActivity extends AppCompatActivity
                 profileList.add(pos, dh);
                 Collections.sort(profileList, Collections.<UserProfile>reverseOrder(new SortByPoints()));
                 profileAdapter.notifyDataSetChanged();
+
+                source = (UserProfile) data.getSerializableExtra("SOURCE");
+                data.putExtra(extraName, source); // Better be Serializable!
+                Log.d(TAG, "LEADER POINTS TO GIVE: " + Integer.toString(source.getPoints_to_award()));
+                setResult(RESULT_OK, data);
             }
         }
     }
+
+    /*@Override
+    public void onBackPressed() {
+        finish();
+    }*/
 }

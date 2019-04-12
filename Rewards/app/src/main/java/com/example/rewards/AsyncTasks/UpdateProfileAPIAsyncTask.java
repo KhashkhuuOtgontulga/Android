@@ -29,20 +29,31 @@ public class UpdateProfileAPIAsyncTask extends AsyncTask<String, Void, String> {
     private static final String loginEndPoint ="/profiles";
     @SuppressLint("StaticFieldLeak")
     private EditProfileActivity editProfileActivity;
+    private AwardActivity awardActivity;
+    boolean edit;
 
 
     public UpdateProfileAPIAsyncTask(EditProfileActivity editActivity) {
         editProfileActivity = editActivity;
+        edit = true;
+
     }
 
-
+    public UpdateProfileAPIAsyncTask(AwardActivity awardActivity) {
+        awardActivity = awardActivity;
+        edit = false;
+    }
 
     @Override
     protected void onPostExecute(String connectionResult) {
         if (connectionResult.contains("error")) // If there is "error" in the results...
-            editProfileActivity.sendResults(true, connectionResult);
+            if(edit){
+                editProfileActivity.sendResults(true, connectionResult);
+            }
         else
-            editProfileActivity.sendResults(false, connectionResult);
+            if(edit){
+                editProfileActivity.sendResults(false, connectionResult);
+            }
     }
 
     @Override
@@ -52,7 +63,8 @@ public class UpdateProfileAPIAsyncTask extends AsyncTask<String, Void, String> {
         String pswd = strings[2];
         String fName = strings[3];
         String lName = strings[4];
-        int pToAward = 1000;
+        String temp = strings[5];
+        int pToAward = Integer.parseInt(temp);
         String dep = strings[6];
         String story = strings[7];
         String position = strings[8];

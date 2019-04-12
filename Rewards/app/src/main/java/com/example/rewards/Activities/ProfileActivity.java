@@ -65,6 +65,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private UserProfile dh;
     private int UPDATE_PROFILE = 1;
+    private int LEADER_PROFILE = 2;
 
     private EditText et;
     private String input;
@@ -91,7 +92,6 @@ public class ProfileActivity extends AppCompatActivity {
         Intent intent = getIntent();
 
         dh = (UserProfile) intent.getSerializableExtra(CreateProfileActivity.extraName);
-        Log.d(TAG, "profile activity onCreate: ");
         nameProfile.setText(dh.getLast_name() + ", " + dh.getFirst_name());
         usernameProfile.setText("(" + dh.getUsername() + ")");
         locationProfile.setText(dh.getLocation());
@@ -99,6 +99,7 @@ public class ProfileActivity extends AppCompatActivity {
         departmentTextProfile.setText(dh.getDepartment());
         positionTextProfile.setText(dh.getPosition());
         numberPointsProfile.setText(String.valueOf(dh.getPoints_to_award()));
+        Log.d(TAG, "PROFILE TO ADD POINTS: " + String.valueOf(dh.getPoints_to_award()));
         storyTextProfile.setText(dh.getStory());
 
         rewardRecycler = findViewById(R.id.rewardRecycler);
@@ -142,7 +143,7 @@ public class ProfileActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.VISIBLE);
                 Intent i = new Intent(this, LeaderboardActivity.class);
                 i.putExtra("LEADER", dh);
-                startActivity(i);
+                startActivityForResult(i, LEADER_PROFILE);
                 progressBar.setVisibility(View.GONE);
                 return true;
             case R.id.deleteField:
@@ -222,6 +223,16 @@ public class ProfileActivity extends AppCompatActivity {
                 byte[] imageBytes = Base64.decode(dh.getImage(),  Base64.DEFAULT);
                 Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
                 imageView.setImageBitmap(bitmap);
+            }
+        }
+        else if (requestCode == LEADER_PROFILE) {
+            if (data == null) {
+                // do nothing
+            }
+            else {
+                dh = (UserProfile) data.getSerializableExtra(LeaderboardActivity.extraName);
+                Log.d(TAG, "PROFILE POINTS TO GIVE: " + String.valueOf(dh.getPoints_to_award()));
+                numberPointsProfile.setText(String.valueOf(dh.getPoints_to_award()));
             }
         }
     }

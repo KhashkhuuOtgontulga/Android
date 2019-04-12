@@ -51,6 +51,7 @@ public class AwardActivity extends AppCompatActivity {
 
     private TextView charCountText;
     private UserProfile dh;
+    private UserProfile source;
     public static int MAX_CHARS = 80;
     private final List<UserProfile> profileList = new ArrayList<>();
     private Intent intent;
@@ -74,6 +75,7 @@ public class AwardActivity extends AppCompatActivity {
         intent = getIntent();
 
         dh = (UserProfile) intent.getSerializableExtra("TARGET");
+        source = (UserProfile) intent.getSerializableExtra("SOURCE");
 
         nameAward.setText(dh.getLast_name() + ", " + dh.getFirst_name() );
         numberPointsAwardedAward.setText(String.valueOf(dh.getPoints_awarded()));
@@ -143,6 +145,9 @@ public class AwardActivity extends AppCompatActivity {
                                 source.getUsername(),
                                 source.getPassword()
                                 );
+                        Log.d(TAG, "SEE HERE: " + String.valueOf(source.getPoints_to_award()+ rewardPointsAward.getText().toString()));
+                        source.setPoints_to_award(source.getPoints_to_award()-Integer.parseInt(rewardPointsAward.getText().toString()));
+                        updateProfile(source);
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -157,6 +162,14 @@ public class AwardActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public void updateProfile(UserProfile up) {
+        Log.d(TAG, "points to award updated: " + up.getPoints_to_award());
+        new UpdateProfileAPIAsyncTask(this).execute("A20379665",
+                up.getUsername(), up.getPassword(), up.getFirst_name(), up.getLast_name(),
+                Integer.toString(up.getPoints_to_award()), up.getDepartment(), up.getStory(), up.getPosition(),
+                Boolean.toString(up.isAdministrator_flag()), up.getLocation(), up.getImage());
     }
 
     public void addReward(String id, String uName, String name, String date, String note, int value, String sName, String sPass) {
@@ -184,8 +197,6 @@ public class AwardActivity extends AppCompatActivity {
                 builder.setMessage(jsonObject.getString("message"));
                 AlertDialog dialog = builder.create();
                 dialog.show();
-
-                dh.setPoints_awarded(dh.getPoints_awarded());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -195,6 +206,8 @@ public class AwardActivity extends AppCompatActivity {
             makeCustomToast(AwardActivity.this, Toast.LENGTH_LONG);
             Intent data = new Intent(); // Used to hold results data to be returned to original activity
             data.putExtra("OBJECT", dh); // Better be Serializable!
+            data.putExtra("SOURCE", source); // Better be Serializable!
+            Log.d(TAG, "AWARD POINTS TO GIVE: " + Integer.toString(source.getPoints_to_award()));
             setResult(RESULT_OK, data);
             finish();
         }
