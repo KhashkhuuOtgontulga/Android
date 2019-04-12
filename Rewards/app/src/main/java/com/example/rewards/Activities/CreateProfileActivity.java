@@ -8,13 +8,20 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.location.Address;
+import android.location.Criteria;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -45,8 +52,11 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
@@ -74,6 +84,12 @@ public class CreateProfileActivity extends AppCompatActivity {
     private static final String TAG = "CreateProfileActivity";
 
     private UserProfile up;
+
+    private LocationManager locationManager;
+    private Location currentLocation;
+    private Criteria criteria;
+    private String location;
+    private static int MY_LOCATION_REQUEST_CODE = 329;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,9 +119,91 @@ public class CreateProfileActivity extends AppCompatActivity {
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowHomeEnabled(true);
-        actionBar.setIcon(R.drawable.arrow_with_logo);
+        actionBar.setHomeAsUpIndicator(R.drawable.arrow_with_logo);
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
-        //leaderboardActivity = new LeaderboardActivity();
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        criteria = new Criteria();
+        criteria.setPowerRequirement(Criteria.POWER_LOW);
+        criteria.setAccuracy(Criteria.ACCURACY_MEDIUM);
+        criteria.setAltitudeRequired(false);
+        criteria.setBearingRequired(false);
+        criteria.setSpeedRequired(false);
+
+        setLocation();
+    }
+
+
+
+    @SuppressLint("MissingPermission")
+    public void setLocation() {
+        //String locationProvider = LocationManager.GPS_PROVIDER;
+        String locationProvider = locationManager.getBestProvider(criteria, true);
+        Log.d(TAG, "locationProvider: " + locationProvider);
+        currentLocation = locationManager.getLastKnownLocation(locationProvider);
+        if (currentLocation != null) {
+            doLatLon();
+        } else {
+            Log.d(TAG, "location unavailable: ");
+        }
+    }
+
+    public void doLatLon() {
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        try {
+            List<Address> addresses;
+
+            String loc = currentLocation.getLatitude() + ", " + currentLocation.getLongitude();
+            Log.d(TAG, "doLatLon: " + loc);
+            if (loc.trim().isEmpty()) {
+                Toast.makeText(this, "Enter Lat & Lon coordinates first!", Toast.LENGTH_LONG).show();
+                return;
+            }
+            String[] latLon = loc.split(",");
+            double lat = Double.parseDouble(latLon[0]);
+            double lon = Double.parseDouble(latLon[1]);
+
+            addresses = geocoder.getFromLocation(lat, lon, 1);
+
+            StringBuilder sb = new StringBuilder();
+
+            for (Address ad : addresses) {
+
+                location = String.format("%s, %s",
+                        (ad.getLocality() == null ? "" : ad.getLocality()),
+                        (ad.getAdminArea() == null ? "" : ad.getAdminArea()));
+
+                sb.append("\n");
+            }
+            Log.d(TAG, "final location: " + location);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(
+            int requestCode, @NonNull
+            String[] permissions, @NonNull
+                    int[] grantResults) {
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == MY_PHOTO_REQUEST_CODE) {
+            if (permissions[0].equals(Manifest.permission.READ_EXTERNAL_STORAGE) &&
+                    grantResults[0] == PERMISSION_GRANTED) {
+                getPhoto();
+                return;
+            }
+        }
+        else if (requestCode == MY_LOCATION_REQUEST_CODE) {
+            if (permissions[0].equals(Manifest.permission.ACCESS_FINE_LOCATION) &&
+                    grantResults[0] == PERMISSION_GRANTED) {
+                setLocation();
+                return;
+            }
+        }
     }
 
     private void addTextListener() {
@@ -142,6 +240,10 @@ public class CreateProfileActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                Log.d(TAG, "in home button: ");
+                return true;
             case R.id.saveField:
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setIcon(R.drawable.logo);
@@ -158,7 +260,7 @@ public class CreateProfileActivity extends AppCompatActivity {
                                 last_name.getText().toString(),
                                 username.getText().toString(),
                                 password.getText().toString(),
-                                "Chicago, Illinois",
+                                location,
                                 administrator_flag.isChecked(),
                                 0,
                                 department.getText().toString(),
@@ -202,23 +304,6 @@ public class CreateProfileActivity extends AppCompatActivity {
                     MY_PHOTO_REQUEST_CODE);
         } else {
             getPhoto();
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(
-            int requestCode, @NonNull
-            String[] permissions, @NonNull
-                    int[] grantResults) {
-
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode == MY_PHOTO_REQUEST_CODE) {
-            if (permissions[0].equals(Manifest.permission.READ_EXTERNAL_STORAGE) &&
-                    grantResults[0] == PERMISSION_GRANTED) {
-                getPhoto();
-                return;
-            }
         }
     }
 

@@ -8,6 +8,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Criteria;
@@ -19,6 +20,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.example.rewards.AsyncTasks.LoginAPIAsyncTask;
 import com.example.rewards.R;
@@ -45,11 +47,9 @@ public class LoginActivity extends AppCompatActivity {
     private EditText data2;
     public static final String extraName = "DATA HOLDER";
 
-    private static int MY_LOCATION_REQUEST_CODE = 329;
-    private LocationManager locationManager;
-    private Location currentLocation;
-    private Criteria criteria;
     private ProgressBar progressBar;
+
+    private static int MY_LOCATION_REQUEST_CODE = 329;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,15 +68,6 @@ public class LoginActivity extends AppCompatActivity {
         data1.setText(prefs.getValue(getString(R.string.data1Key)));
         data2.setText(prefs.getValue(getString(R.string.data2Key)));
 
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        criteria = new Criteria();
-        criteria.setPowerRequirement(Criteria.POWER_LOW);
-        criteria.setAccuracy(Criteria.ACCURACY_MEDIUM);
-        criteria.setAltitudeRequired(false);
-        criteria.setBearingRequired(false);
-        criteria.setSpeedRequired(false);
-
         progressBar = findViewById(R.id.progressBar);
         progressBar.bringToFront();
         progressBar.setVisibility(View.GONE);
@@ -90,22 +81,7 @@ public class LoginActivity extends AppCompatActivity {
                     },
                     MY_LOCATION_REQUEST_CODE);
         }
-    }
 
-    @Override
-    public void onRequestPermissionsResult(
-            int requestCode, @NonNull
-            String[] permissions, @NonNull
-                    int[] grantResults) {
-
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode == MY_LOCATION_REQUEST_CODE) {
-            if (permissions[0].equals(Manifest.permission.ACCESS_FINE_LOCATION) &&
-                    grantResults[0] == PERMISSION_GRANTED) {
-                return;
-            }
-        }
     }
 
     public void itemClicked(View w) {

@@ -6,9 +6,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -23,6 +28,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -59,7 +65,8 @@ public final class LeaderboardActivity extends AppCompatActivity
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowHomeEnabled(true);
-        actionBar.setIcon(R.drawable.arrow_with_logo);
+        actionBar.setHomeAsUpIndicator(R.drawable.arrow_with_logo);
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         // load the profiles from the AWS database and display the profiles
         new GetAllProfilesAPIAyncTask(this).execute("A20379665", up.getUsername(), up.getPassword());
@@ -155,6 +162,18 @@ public final class LeaderboardActivity extends AppCompatActivity
                 }
             }
             initiateData(userProfilesList);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                Log.d(TAG, "in home button: ");
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 

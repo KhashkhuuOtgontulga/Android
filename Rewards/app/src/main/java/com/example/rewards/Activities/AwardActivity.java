@@ -33,7 +33,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class AwardActivity extends AppCompatActivity {
@@ -130,10 +132,12 @@ public class AwardActivity extends AppCompatActivity {
                         UserProfile source = (UserProfile) intent.getSerializableExtra("SOURCE");
                         // there should be a comment
                         // can't add a reward to yourself
+                        String date = new SimpleDateFormat("MM/dd/yyyy").format(new Date());
+
                         addReward("A20379665",
                                 dh.getUsername(),
                                 source.getFirst_name() + " " + source.getLast_name(),
-                                "03/10/2019",
+                                date,
                                 commentTextAward.getText().toString(),
                                 Integer.parseInt(rewardPointsAward.getText().toString()),
                                 source.getUsername(),
