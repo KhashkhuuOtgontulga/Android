@@ -22,12 +22,18 @@ import android.widget.ProgressBar;
 
 import com.example.rewards.AsyncTasks.LoginAPIAsyncTask;
 import com.example.rewards.R;
+import com.example.rewards.Reward;
 import com.example.rewards.SharedPreference;
 import com.example.rewards.UserProfile;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
@@ -169,6 +175,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void sendResults(boolean error, String s) {
+        Log.d(TAG, "sendResults: " + s);
         if (error) {
             try {
                 JSONObject errorDetails = new JSONObject(s);
@@ -183,6 +190,8 @@ public class LoginActivity extends AppCompatActivity {
             }
         }
         else {
+            ArrayList<Reward> temp = new ArrayList<>();
+
             JSONObject json = null;
             try {
                 json = new JSONObject(s);
@@ -195,6 +204,10 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d(TAG, "rewards: " + rewards.toString());
                 for (int j = 0; j < rewards.length(); j++) {
                     JSONObject giver = rewards.getJSONObject(j);
+                    temp.add(new Reward(giver.getString("date"),
+                            giver.getString("name"),
+                            giver.getString("notes"),
+                            Integer.parseInt(giver.getString("value"))));
                     total += Integer.parseInt(giver.getString("value"));
                 }
                 Log.d(TAG, "total: " + Integer.toString(total));
@@ -214,7 +227,9 @@ public class LoginActivity extends AppCompatActivity {
                         json.getString("position"),
                         Integer.parseInt(json.getString("pointsToAward")),
                         json.getString("story"),
-                        json.getString("imageBytes"));
+                        json.getString("imageBytes"),
+                        temp);
+                        //json.getString("rewards"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }

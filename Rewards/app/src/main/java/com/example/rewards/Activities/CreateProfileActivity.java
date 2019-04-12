@@ -35,8 +35,10 @@ import android.widget.Toast;
 
 import com.example.rewards.AsyncTasks.CreateProfileAPIAsyncTask;
 import com.example.rewards.R;
+import com.example.rewards.Reward;
 import com.example.rewards.UserProfile;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -44,7 +46,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.Locale;
+import java.util.ArrayList;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
@@ -151,7 +153,7 @@ public class CreateProfileActivity extends AppCompatActivity {
                         ByteArrayOutputStream bitmapAsByteArrayStream = new ByteArrayOutputStream();
                         origBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bitmapAsByteArrayStream);
                         String imgString = Base64.encodeToString(bitmapAsByteArrayStream.toByteArray(), Base64.DEFAULT);
-
+                        ArrayList<Reward> temp = new ArrayList<>();
                         up = new UserProfile(first_name.getText().toString(),
                                 last_name.getText().toString(),
                                 username.getText().toString(),
@@ -163,7 +165,7 @@ public class CreateProfileActivity extends AppCompatActivity {
                                 position.getText().toString(),
                                         1000,
                                 story.getText().toString(),
-                                imgString);
+                                imgString, temp);
                         createProfile(up);
                     }
                 });

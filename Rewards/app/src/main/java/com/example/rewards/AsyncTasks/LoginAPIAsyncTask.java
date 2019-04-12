@@ -66,8 +66,8 @@ public class LoginAPIAsyncTask extends AsyncTask<String, Void, String> {
         BufferedReader reader = null;
 
         try {
-            Log.d(TAG, "login doAPICall: ");
             String urlString = baseUrl + loginEndPoint;  // Build the full URL
+            Log.d(TAG, "login doAPICall: " + urlString);
 
             Uri uri = Uri.parse(urlString);    // Convert String url to URI
             URL url = new URL(uri.toString()); // Convert URI to URL
@@ -91,6 +91,7 @@ public class LoginAPIAsyncTask extends AsyncTask<String, Void, String> {
 
             // If successful (HTTP_OK)
             if (responseCode == HTTP_OK) {
+                Log.d(TAG, "HTTP okay:");
 
                 // Read the results - use connection's getInputStream
                 reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
@@ -103,6 +104,8 @@ public class LoginAPIAsyncTask extends AsyncTask<String, Void, String> {
                 return result.toString();
 
             } else {
+                Log.d(TAG, "HTTP not okay:");
+
                 // Not HTTP_OK - some error occurred - use connection's getErrorStream
                 reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
                 String line;
@@ -113,7 +116,6 @@ public class LoginAPIAsyncTask extends AsyncTask<String, Void, String> {
                 // Return the results (to onPostExecute)
                 return result.toString();
             }
-
         } catch (Exception e) {
             // Some exception occurred! Log it.
             Log.d(TAG, "doAuth: " + e.getClass().getName() + ": " + e.getMessage());

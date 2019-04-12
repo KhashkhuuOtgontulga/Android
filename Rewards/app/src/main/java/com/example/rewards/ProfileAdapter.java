@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.rewards.Activities.LeaderboardActivity;
+import com.example.rewards.Activities.ProfileActivity;
 
 import java.util.List;
 

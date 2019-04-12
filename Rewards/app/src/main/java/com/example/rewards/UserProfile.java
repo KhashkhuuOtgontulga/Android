@@ -1,6 +1,7 @@
 package com.example.rewards;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class UserProfile implements Serializable {
     private String username;
@@ -15,8 +16,9 @@ public class UserProfile implements Serializable {
     private String location;
     private int points_awarded;
     private String image;
+    private ArrayList<Reward> rewards;
 
-    public UserProfile(String first_name, String last_name, String username, String password, String location, boolean administrator_flag, int points_awarded, String department, String position, int points_to_award, String story, String image) {
+    public UserProfile(String first_name, String last_name, String username, String password, String location, boolean administrator_flag, int points_awarded, String department, String position, int points_to_award, String story, String image, ArrayList<Reward> rewards) {
         this.first_name = first_name;
         this.last_name = last_name;
         this.username = username;
@@ -29,6 +31,7 @@ public class UserProfile implements Serializable {
         this.points_to_award = points_to_award;
         this.story = story;
         this.image = image;
+        this.rewards = rewards;
     }
 
     public String getImage() {
@@ -75,10 +78,6 @@ public class UserProfile implements Serializable {
         return points_awarded;
     }
 
-    public void setPoints_to_award(int points_to_award) {
-        this.points_to_award = points_to_award;
-    }
-
     public void setPoints_awarded(int points_awarded) {
         this.points_awarded = points_awarded;
     }
@@ -101,6 +100,10 @@ public class UserProfile implements Serializable {
 
     public String getStory() {
         return story;
+    }
+
+    public ArrayList<Reward> getRewards() {
+        return rewards;
     }
 }
 

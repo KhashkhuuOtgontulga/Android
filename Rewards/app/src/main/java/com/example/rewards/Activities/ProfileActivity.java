@@ -3,6 +3,8 @@ package com.example.rewards.Activities;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -25,12 +27,19 @@ import android.widget.Toast;
 import com.example.rewards.AsyncTasks.DeleteAllProfileAPIAsyncTask;
 import com.example.rewards.AsyncTasks.DeleteProfileAPIAsyncTask;
 import com.example.rewards.AsyncTasks.ResetPointsAPIAsyncTask;
-import com.example.rewards.AsyncTasks.UpdateProfileAPIAsyncTask;
+import com.example.rewards.ProfileAdapter;
 import com.example.rewards.R;
+import com.example.rewards.Reward;
+import com.example.rewards.RewardAdapter;
+import com.example.rewards.SortByPoints;
 import com.example.rewards.UserProfile;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import static android.view.Gravity.CENTER_HORIZONTAL;
 
@@ -46,6 +55,11 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView numberPointsProfile;
     private TextView storyTextProfile;
     private ImageView imageView;
+
+    private TextView rewardHistory;
+    private final List<Reward> rewardList = new ArrayList<>();
+    private RewardAdapter rewardAdapter;
+    private RecyclerView rewardRecycler;
 
     private ProgressBar progressBar;
 
@@ -71,6 +85,8 @@ public class ProfileActivity extends AppCompatActivity {
         numberPointsProfile = findViewById(R.id.numberPointsProfile);
         storyTextProfile = findViewById(R.id.storyTextAward);
         imageView = findViewById(R.id.imageAward);
+        rewardHistory = findViewById(R.id.rewardHistory);
+        rewardRecycler = findViewById(R.id.rewardRecycler);
 
         Intent intent = getIntent();
 
@@ -84,6 +100,16 @@ public class ProfileActivity extends AppCompatActivity {
         positionTextProfile.setText(dh.getPosition());
         numberPointsProfile.setText(String.valueOf(dh.getPoints_to_award()));
         storyTextProfile.setText(dh.getStory());
+
+        rewardRecycler = findViewById(R.id.rewardRecycler);
+        rewardAdapter = new RewardAdapter(rewardList);
+        // connect the recyclerView to the adapter
+        rewardRecycler.setLayoutManager(new LinearLayoutManager(this));
+        rewardRecycler.setAdapter(rewardAdapter);
+        /* show the recyclerview */
+        rewardList.addAll(dh.getRewards());
+        rewardAdapter.notifyDataSetChanged();
+        rewardHistory.setText("Reward History " + "("+ rewardAdapter.getItemCount() + "):");
 
         progressBar = findViewById(R.id.progressBar2);
         progressBar.bringToFront();

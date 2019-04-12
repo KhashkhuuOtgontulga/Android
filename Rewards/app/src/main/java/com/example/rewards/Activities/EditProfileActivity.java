@@ -42,7 +42,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.Locale;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
@@ -173,7 +172,7 @@ public class EditProfileActivity extends AppCompatActivity {
                                 position.getText().toString(),
                                 dh.getPoints_to_award(),
                                 story.getText().toString(),
-                                imgString);
+                                imgString, dh.getRewards());
                         updateProfile(up);
                     }
                 });
@@ -279,17 +278,17 @@ public class EditProfileActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    public void doGallery() {
-        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-        photoPickerIntent.setType("image/*");
-        startActivityForResult(photoPickerIntent, REQUEST_IMAGE_GALLERY);
-    }
-
     public void doCamera() {
         currentImageFile = new File(getExternalCacheDir(), "appimage_" + System.currentTimeMillis() + ".jpg");
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(currentImageFile));
         startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+    }
+
+    public void doGallery() {
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        photoPickerIntent.setType("image/*");
+        startActivityForResult(photoPickerIntent, REQUEST_IMAGE_GALLERY);
     }
 
     @Override
@@ -315,8 +314,6 @@ public class EditProfileActivity extends AppCompatActivity {
     private void processCamera() {
         Uri selectedImage = Uri.fromFile(currentImageFile);
         imageView.setImageURI(selectedImage);
-        Bitmap bm = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
-
         currentImageFile.delete();
     }
 

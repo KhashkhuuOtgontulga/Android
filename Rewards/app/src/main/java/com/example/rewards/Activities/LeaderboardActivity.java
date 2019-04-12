@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.example.rewards.AsyncTasks.GetAllProfilesAPIAyncTask;
 import com.example.rewards.ProfileAdapter;
 import com.example.rewards.R;
+import com.example.rewards.Reward;
 import com.example.rewards.SortByPoints;
 import com.example.rewards.UserProfile;
 
@@ -50,10 +51,11 @@ public final class LeaderboardActivity extends AppCompatActivity
 
         profileAdapter = new ProfileAdapter(profileList, up, this);
 
-        // connect the recyclerView to the adapter
-        recyclerView.setAdapter(profileAdapter);
-        /* show the recyclerview */
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        recyclerView.setAdapter(profileAdapter);
+
+        profileAdapter.notifyDataSetChanged();
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowHomeEnabled(true);
@@ -106,6 +108,8 @@ public final class LeaderboardActivity extends AppCompatActivity
             }
 
             ArrayList<UserProfile> userProfilesList = new ArrayList<>();
+            ArrayList<Reward> temp = new ArrayList<>();
+
             if (jsonArrProfiles == null)
                 return;
 
@@ -120,6 +124,10 @@ public final class LeaderboardActivity extends AppCompatActivity
                         Log.d(TAG, "rewards: " + rewards.toString());
                         for (int j = 0; j < rewards.length(); j++) {
                             JSONObject giver = rewards.getJSONObject(j);
+                            temp.add(new Reward(giver.getString("date"),
+                                    giver.getString("name"),
+                                    giver.getString("notes"),
+                                    Integer.parseInt(giver.getString("value"))));
                             total += Integer.parseInt(giver.getString("value"));
                         }
                         Log.d(TAG, "total: " + Integer.toString(total));
@@ -140,7 +148,8 @@ public final class LeaderboardActivity extends AppCompatActivity
                                     profile.getString("position"),
                                     Integer.parseInt(profile.getString("pointsToAward")),
                                     profile.getString("story"),
-                                    profile.getString("imageBytes")));
+                                    profile.getString("imageBytes"),
+                                    temp));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
