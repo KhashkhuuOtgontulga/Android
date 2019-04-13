@@ -185,16 +185,17 @@ public final class LeaderboardActivity extends AppCompatActivity
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == ADD_CODE) {
             if (resultCode == RESULT_OK) {
-                UserProfile dh = (UserProfile) data.getSerializableExtra("OBJECT");
+                UserProfile dh = (UserProfile) data.getSerializableExtra("TARGET");
                 profileList.remove(pos);
                 profileList.add(pos, dh);
                 Collections.sort(profileList, Collections.<UserProfile>reverseOrder(new SortByPoints()));
                 profileAdapter.notifyDataSetChanged();
 
+                Intent up = new Intent();
                 source = (UserProfile) data.getSerializableExtra("SOURCE");
-                data.putExtra(extraName, source); // Better be Serializable!
+                up.putExtra(extraName, source); // Better be Serializable!
                 Log.d(TAG, "LEADER POINTS TO GIVE: " + Integer.toString(source.getPoints_to_award()));
-                setResult(RESULT_OK, data);
+                setResult(RESULT_OK, up);
             }
         }
     }

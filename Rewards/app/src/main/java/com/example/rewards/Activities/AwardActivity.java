@@ -146,8 +146,6 @@ public class AwardActivity extends AppCompatActivity {
                                 source.getPassword()
                                 );
                         Log.d(TAG, "SEE HERE: " + String.valueOf(source.getPoints_to_award()+ rewardPointsAward.getText().toString()));
-                        source.setPoints_to_award(source.getPoints_to_award()-Integer.parseInt(rewardPointsAward.getText().toString()));
-                        updateProfile(source);
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -203,9 +201,11 @@ public class AwardActivity extends AppCompatActivity {
         }
         else {
             dh.setPoints_awarded(dh.getPoints_awarded() + Integer.parseInt(rewardPointsAward.getText().toString()));
+            source.setPoints_to_award(source.getPoints_to_award()-Integer.parseInt(rewardPointsAward.getText().toString()));
+            updateProfile(source);
             makeCustomToast(AwardActivity.this, Toast.LENGTH_LONG);
             Intent data = new Intent(); // Used to hold results data to be returned to original activity
-            data.putExtra("OBJECT", dh); // Better be Serializable!
+            data.putExtra("TARGET", dh); // Better be Serializable!
             data.putExtra("SOURCE", source); // Better be Serializable!
             Log.d(TAG, "AWARD POINTS TO GIVE: " + Integer.toString(source.getPoints_to_award()));
             setResult(RESULT_OK, data);
