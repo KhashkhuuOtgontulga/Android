@@ -270,7 +270,7 @@ public class EditProfileActivity extends AppCompatActivity {
         Log.d(TAG, "updateProfile password: " + up.getPassword());
         new UpdateProfileAPIAsyncTask(this).execute("A20379665",
                 up.getUsername(), up.getPassword(), up.getFirst_name(), up.getLast_name(),
-                "", up.getDepartment(), up.getStory(), up.getPosition(),
+                Integer.toString(up.getPoints_to_award()), up.getDepartment(), up.getStory(), up.getPosition(),
                 Boolean.toString(up.isAdministrator_flag()), up.getLocation(), up.getImage());
     }
 

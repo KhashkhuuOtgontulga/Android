@@ -36,12 +36,13 @@ public class UpdateProfileAPIAsyncTask extends AsyncTask<String, Void, String> {
     public UpdateProfileAPIAsyncTask(EditProfileActivity editActivity) {
         editProfileActivity = editActivity;
         edit = true;
-
+        Log.d(TAG, "UpdateProfileAPIAsyncTask: true");
     }
 
     public UpdateProfileAPIAsyncTask(AwardActivity awardActivity) {
         awardActivity = awardActivity;
         edit = false;
+        Log.d(TAG, "UpdateProfileAPIAsyncTask: false");
     }
 
     @Override
