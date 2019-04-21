@@ -47,18 +47,35 @@ public class UpdateProfileAPIAsyncTask extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPostExecute(String connectionResult) {
-        if (connectionResult.contains("error")) // If there is "error" in the results...
-            if(edit){
+        if (connectionResult.contains("error")) { // If there is "error" in the results...
+            if (edit) {
+                Log.d(TAG, "onPostExecute position:  error");
                 editProfileActivity.sendResults(true, connectionResult);
             }
-        else
-            if(edit){
-                editProfileActivity.sendResults(false, connectionResult);
-            }
+        }
+        else {
+                if (edit) {
+                    Log.d(TAG, "onPostExecute position:  success");
+                    editProfileActivity.sendResults(false, connectionResult);
+                }
+        }
     }
 
     @Override
     protected String doInBackground(String... strings) {
+        /*new UpdateProfileAPIAsyncTask(this).execute(
+                0 "A20379665",
+                1 up.getUsername(),
+                2 up.getPassword(),
+                3 up.getFirst_name(),
+                4 up.getLast_name(),
+                5 Integer.toString(up.getPoints_to_award()),
+                6 up.getDepartment(),
+                7 up.getStory(),
+                8 up.getPosition(),
+                9 Boolean.toString(up.isAdministrator_flag()),
+                10 up.getLocation(),
+                11 up.getImage());*/
         String stuId = strings[0];
         String uName = strings[1];
         String pswd = strings[2];
@@ -69,6 +86,7 @@ public class UpdateProfileAPIAsyncTask extends AsyncTask<String, Void, String> {
         String dep = strings[6];
         String story = strings[7];
         String position = strings[8];
+        Log.d(TAG, "doInBackground position: " + position);
         String temp2 = strings[9];
         boolean admin = Boolean.parseBoolean(temp2);
         String location = strings[10];

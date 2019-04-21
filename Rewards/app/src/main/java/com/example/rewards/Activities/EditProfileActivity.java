@@ -267,7 +267,7 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     public void updateProfile(UserProfile up) {
-        Log.d(TAG, "updateProfile password: " + up.getPassword());
+        Log.d(TAG, "updateProfile position: " + up.getPosition());
         new UpdateProfileAPIAsyncTask(this).execute("A20379665",
                 up.getUsername(), up.getPassword(), up.getFirst_name(), up.getLast_name(),
                 Integer.toString(up.getPoints_to_award()), up.getDepartment(), up.getStory(), up.getPosition(),
@@ -287,6 +287,7 @@ public class EditProfileActivity extends AppCompatActivity {
     public void sendResults(boolean error, String connectionResult) {
         if (error) {
             try {
+                Log.d(TAG, "sendResults: " + connectionResult);
                 JSONObject errorDetails = new JSONObject(connectionResult);
                 JSONObject jsonObject = new JSONObject(errorDetails.getString("errordetails"));
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -299,6 +300,7 @@ public class EditProfileActivity extends AppCompatActivity {
             }
         }
         else {
+            Log.d(TAG, "sendResults position: ");
             makeCustomToast(EditProfileActivity.this, Toast.LENGTH_LONG);
             Intent data = new Intent(); // Used to hold results data to be returned to original activity
             data.putExtra(extraName, up); // Better be Serializable!

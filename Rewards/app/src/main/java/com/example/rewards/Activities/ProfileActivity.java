@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.example.rewards.AsyncTasks.DeleteAllProfileAPIAsyncTask;
 import com.example.rewards.AsyncTasks.DeleteProfileAPIAsyncTask;
 import com.example.rewards.AsyncTasks.ResetPointsAPIAsyncTask;
+import com.example.rewards.HighestPoints;
 import com.example.rewards.ProfileAdapter;
 import com.example.rewards.R;
 import com.example.rewards.Reward;
@@ -109,6 +110,7 @@ public class ProfileActivity extends AppCompatActivity {
         rewardRecycler.setAdapter(rewardAdapter);
         /* show the recyclerview */
         rewardList.addAll(dh.getRewards());
+        Collections.sort(rewardList, Collections.<Reward>reverseOrder(new HighestPoints()));
         rewardAdapter.notifyDataSetChanged();
         rewardHistory.setText("Reward History " + "("+ rewardAdapter.getItemCount() + "):");
 

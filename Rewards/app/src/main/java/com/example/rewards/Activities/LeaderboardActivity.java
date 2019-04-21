@@ -199,9 +199,4 @@ public final class LeaderboardActivity extends AppCompatActivity
             }
         }
     }
-
-    /*@Override
-    public void onBackPressed() {
-        finish();
-    }*/
 }

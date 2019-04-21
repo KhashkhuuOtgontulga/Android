@@ -8,3 +8,4 @@ public class SortByPoints implements Comparator<UserProfile>{
         return a.getPoints_awarded() - (b.getPoints_awarded());
     }
 }
+

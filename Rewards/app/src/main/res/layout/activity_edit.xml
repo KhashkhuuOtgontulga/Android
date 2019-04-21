@@ -1,205 +1,212 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background"
-    tools:context=".Activities.EditProfileActivity">
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/background"
+        tools:context=".Activities.EditProfileActivity">
 
-    <TextView
-        android:id="@+id/counter2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="(0 of 360)"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="@+id/textView7"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.072"
-        app:layout_constraintStart_toEndOf="@+id/textView7"
-        app:layout_constraintTop_toTopOf="@+id/textView7"
-        app:layout_constraintVertical_bias="1.0" />
+        <TextView
+            android:id="@+id/counter2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="(0 of 360)"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@+id/textView7"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.072"
+            app:layout_constraintStart_toEndOf="@+id/textView7"
+            app:layout_constraintTop_toTopOf="@+id/textView7"
+            app:layout_constraintVertical_bias="1.0" />
 
-    <ImageView
-        android:id="@+id/imageProfile2"
-        android:layout_width="173dp"
-        android:layout_height="255dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:onClick="pickPhoto"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/default_photo" />
+        <ImageView
+            android:id="@+id/imageProfile2"
+            android:layout_width="173dp"
+            android:layout_height="255dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:onClick="pickPhoto"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/default_photo" />
 
-    <CheckBox
-        android:id="@+id/administrator2"
-        android:layout_width="0dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="16dp"
-        android:buttonTint="@color/colorPrimary"
-        android:text="Administrator User"
-        android:textColor="@color/colorPrimary"
-        app:layout_constraintEnd_toEndOf="@+id/passProfile"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/passProfile"
-        app:layout_constraintTop_toBottomOf="@+id/passProfile" />
+        <CheckBox
+            android:id="@+id/administrator2"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="16dp"
+            android:buttonTint="@color/colorPrimary"
+            android:text="Administrator User"
+            android:textColor="@color/colorPrimary"
+            app:layout_constraintEnd_toEndOf="@+id/passProfile"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/passProfile"
+            app:layout_constraintTop_toBottomOf="@+id/passProfile" />
 
-    <EditText
-        android:id="@+id/firstNameEdit"
-        android:layout_width="0dp"
-        android:layout_height="35dp"
-        android:layout_marginTop="8dp"
-        android:background="#99dddddd"
-        android:hint="Enter First Name"
-        android:inputType="textPersonName"
-        android:textColorHint="@color/colorPrimary"
-        app:layout_constraintEnd_toEndOf="@+id/administrator2"
-        app:layout_constraintStart_toStartOf="@+id/administrator2"
-        app:layout_constraintTop_toBottomOf="@+id/administrator2" />
+        <EditText
+            android:id="@+id/firstNameEdit"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="8dp"
+            android:background="#99dddddd"
+            android:hint="Enter First Name"
+            android:inputType="textPersonName"
+            android:textColorHint="@color/colorPrimary"
+            app:layout_constraintEnd_toEndOf="@+id/administrator2"
+            app:layout_constraintStart_toStartOf="@+id/administrator2"
+            app:layout_constraintTop_toBottomOf="@+id/administrator2" />
 
-    <EditText
-        android:id="@+id/lastNameEdit"
-        android:layout_width="0dp"
-        android:layout_height="35dp"
-        android:layout_marginTop="8dp"
-        android:background="#99dddddd"
-        android:ems="10"
-        android:hint="Enter Last Name"
-        android:inputType="textPersonName"
-        android:textColorHint="@color/colorPrimary"
-        app:layout_constraintBottom_toBottomOf="@+id/imageProfile2"
-        app:layout_constraintEnd_toEndOf="@+id/firstNameEdit"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/firstNameEdit"
-        app:layout_constraintTop_toBottomOf="@+id/firstNameEdit" />
+        <EditText
+            android:id="@+id/lastNameEdit"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="8dp"
+            android:background="#99dddddd"
+            android:ems="10"
+            android:hint="Enter Last Name"
+            android:inputType="textPersonName"
+            android:textColorHint="@color/colorPrimary"
+            app:layout_constraintBottom_toBottomOf="@+id/imageProfile2"
+            app:layout_constraintEnd_toEndOf="@+id/firstNameEdit"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/firstNameEdit"
+            app:layout_constraintTop_toBottomOf="@+id/firstNameEdit" />
 
-    <TextView
-        android:id="@+id/textView5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="Department:"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageProfile2" />
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="Department:"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageProfile2" />
 
-    <TextView
-        android:id="@+id/textView6"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="Position"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="@+id/textView5"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/textView5"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Position"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="@+id/textView5"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/textView5"
+            app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
-    <EditText
-        android:id="@+id/departmentEdit"
-        android:layout_width="wrap_content"
-        android:layout_height="35dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:background="#99dddddd"
-        android:ems="10"
-        android:hint="Select Department"
-        android:inputType="textPersonName"
-        android:textColorHint="@color/colorPrimary"
-        app:layout_constraintBottom_toBottomOf="@+id/textView5"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView5"
-        app:layout_constraintTop_toTopOf="@+id/textView5" />
+        <EditText
+            android:id="@+id/departmentEdit"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="#99dddddd"
+            android:ems="10"
+            android:hint="Select Department"
+            android:inputType="textPersonName"
+            android:textColorHint="@color/colorPrimary"
+            app:layout_constraintBottom_toBottomOf="@+id/textView5"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textView5"
+            app:layout_constraintTop_toTopOf="@+id/textView5" />
 
-    <EditText
-        android:id="@+id/positionAward"
-        android:layout_width="0dp"
-        android:layout_height="35dp"
-        android:background="#99dddddd"
-        android:ems="10"
-        android:hint="Enter Your Position"
-        android:inputType="textPersonName"
-        android:textColorHint="@color/colorPrimary"
-        app:layout_constraintBottom_toBottomOf="@+id/textView6"
-        app:layout_constraintEnd_toEndOf="@+id/departmentEdit"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/departmentEdit"
-        app:layout_constraintTop_toTopOf="@+id/textView6"
-        app:layout_constraintVertical_bias="0.0" />
+        <EditText
+            android:id="@+id/positionAward"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:background="#99dddddd"
+            android:ems="10"
+            android:hint="Enter Your Position"
+            android:inputType="textPersonName"
+            android:textColorHint="@color/colorPrimary"
+            app:layout_constraintBottom_toBottomOf="@+id/textView6"
+            app:layout_constraintEnd_toEndOf="@+id/departmentEdit"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/departmentEdit"
+            app:layout_constraintTop_toTopOf="@+id/textView6"
+            app:layout_constraintVertical_bias="0.0" />
 
-    <TextView
-        android:id="@+id/textView7"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="Your Story:"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="@+id/textView6"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/textView6"
-        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Your Story:"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="@+id/textView6"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@+id/textView6"
+            app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
-    <EditText
-        android:id="@+id/storyEdit"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:background="#99dddddd"
-        android:ems="10"
-        android:gravity="top|left"
-        android:hint="Tell us something about yourself!"
-        android:inputType="textMultiLine|textPersonName"
-        android:textAlignment="viewStart"
-        android:textColorHint="@color/colorPrimary"
-        android:textStyle="italic"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView7" />
+        <EditText
+            android:id="@+id/storyEdit"
+            android:layout_width="0dp"
+            android:layout_height="297dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            android:background="#99dddddd"
+            android:ems="10"
+            android:gravity="top|left"
+            android:hint="Tell us something about yourself!"
+            android:inputType="textMultiLine|textPersonName"
+            android:textAlignment="viewStart"
+            android:textColorHint="@color/colorPrimary"
+            android:textStyle="italic"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
-    <EditText
-        android:id="@+id/passProfile"
-        android:layout_width="0dp"
-        android:layout_height="35dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="8dp"
-        android:background="#99dddddd"
-        android:ems="10"
-        android:hint="Select Password"
-        android:inputType="textPassword"
-        android:textColorHint="@color/colorPrimary"
-        app:layout_constraintEnd_toEndOf="@+id/nonEdit"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/nonEdit"
-        app:layout_constraintTop_toBottomOf="@+id/nonEdit" />
+        <EditText
+            android:id="@+id/passProfile"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="8dp"
+            android:background="#99dddddd"
+            android:ems="10"
+            android:hint="Select Password"
+            android:inputType="textPassword"
+            android:textColorHint="@color/colorPrimary"
+            app:layout_constraintEnd_toEndOf="@+id/nonEdit"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@+id/nonEdit"
+            app:layout_constraintTop_toBottomOf="@+id/nonEdit" />
 
-    <TextView
-        android:id="@+id/nonEdit"
-        android:layout_width="0dp"
-        android:layout_height="35dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:background="#99dddddd"
-        android:textColorHint="@color/colorPrimary"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageProfile2"
-        app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/nonEdit"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:background="#99dddddd"
+            android:textColorHint="@color/colorPrimary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imageProfile2"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/imageView5"
-        android:layout_width="79dp"
-        android:layout_height="84dp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageProfile2"
-        app:layout_constraintEnd_toEndOf="@+id/imageProfile2"
-        app:layout_constraintStart_toStartOf="@+id/imageProfile2"
-        app:layout_constraintTop_toTopOf="@+id/imageProfile2"
-        app:srcCompat="@android:drawable/ic_menu_add" />
+        <ImageView
+            android:id="@+id/imageView5"
+            android:layout_width="79dp"
+            android:layout_height="84dp"
+            app:layout_constraintBottom_toBottomOf="@+id/imageProfile2"
+            app:layout_constraintEnd_toEndOf="@+id/imageProfile2"
+            app:layout_constraintStart_toStartOf="@+id/imageProfile2"
+            app:layout_constraintTop_toTopOf="@+id/imageProfile2"
+            app:srcCompat="@android:drawable/ic_menu_add" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
