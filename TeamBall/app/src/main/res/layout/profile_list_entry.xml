@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/nameField"
+        android:layout_width="211dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="28dp"
+        android:ellipsize="end"
+        android:maxWidth="295dp"
+        android:text="@android:string/dialog_alert_title"
+        android:textAlignment="viewStart"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView7"
+        android:layout_width="wrap_content"
+        android:layout_height="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nameField"
+        app:srcCompat="@drawable/separator" />
+
+    <TextView
+        android:id="@+id/invite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:onClick="inviteFriend"
+        android:text="Invite"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/state"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/state"
+        app:layout_constraintTop_toTopOf="@+id/state" />
+
+    <TextView
+        android:id="@+id/state"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="44dp"
+        android:onClick="changeState"
+        android:text="N/A"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/nameField"
+        app:layout_constraintStart_toEndOf="@+id/nameField"
+        app:layout_constraintTop_toTopOf="@+id/nameField"
+        app:layout_constraintVertical_bias="0.375" />
+</androidx.constraintlayout.widget.ConstraintLayout>

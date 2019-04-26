@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scrollbarAlwaysDrawHorizontalTrack="false"
+    android:scrollbarAlwaysDrawVerticalTrack="false"
+    android:scrollbars="vertical"
+    tools:context=".Activities.ProfileActivity">
+
+    <TextView
+        android:id="@+id/nameAward"
+        android:layout_width="284dp"
+        android:layout_height="39dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="64dp"
+        android:text="TextView"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/usernameProfile"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/locationProfile"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="TextView"
+        android:textSize="18sp"
+        android:textStyle="italic"
+        app:layout_constraintEnd_toEndOf="@+id/nameAward"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/nameAward"
+        app:layout_constraintTop_toBottomOf="@+id/nameAward" />
+
+    <TextView
+        android:id="@+id/usernameProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="28dp"
+        android:text="TextView"
+        android:textSize="18sp"
+        android:textStyle="italic"
+        app:layout_constraintBottom_toBottomOf="@+id/nameAward"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/nameAward"
+        app:layout_constraintVertical_bias="0.466" />
+
+    <TextView
+        android:id="@+id/numberPointsAwardedAward"
+        android:layout_width="0dp"
+        android:layout_height="31dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="TextView"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/pointsAwardedAward"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/pointsAwardedAward"
+        app:layout_constraintTop_toBottomOf="@+id/pointsAwardedAward" />
+
+    <ImageView
+        android:id="@+id/imageAward"
+        android:layout_width="203dp"
+        android:layout_height="261dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/locationProfile"
+        app:srcCompat="@drawable/default_photo" />
+
+    <TextView
+        android:id="@+id/pointsAwardedAward"
+        android:layout_width="180dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="Points Awarded: "
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.339"
+        app:layout_constraintStart_toEndOf="@+id/imageAward"
+        app:layout_constraintTop_toTopOf="@+id/imageAward" />
+
+    <TextView
+        android:id="@+id/departmentAward"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Department:"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="@+id/pointsAwardedAward"
+        app:layout_constraintStart_toStartOf="@+id/pointsAwardedAward"
+        app:layout_constraintTop_toBottomOf="@+id/numberPointsAwardedAward" />
+
+    <TextView
+        android:id="@+id/departmentTextAward"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="TextView"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="@+id/numberPointsAwardedAward"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/numberPointsAwardedAward"
+        app:layout_constraintTop_toBottomOf="@+id/departmentAward" />
+
+    <TextView
+        android:id="@+id/positionAward"
+        android:layout_width="0dp"
+        android:layout_height="34dp"
+        android:layout_marginTop="8dp"
+        android:text="Position:"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="@+id/departmentAward"
+        app:layout_constraintHorizontal_bias="0.666"
+        app:layout_constraintStart_toStartOf="@+id/departmentAward"
+        app:layout_constraintTop_toBottomOf="@+id/departmentTextAward" />
+
+    <TextView
+        android:id="@+id/positionTextAward"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="TextView"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="@+id/departmentTextAward"
+        app:layout_constraintStart_toStartOf="@+id/departmentTextAward"
+        app:layout_constraintTop_toBottomOf="@+id/positionAward" />
+
+    <TextView
+        android:id="@+id/pointsToGiveProfile"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Points to Award: "
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="@+id/positionAward"
+        app:layout_constraintHorizontal_bias="0.02"
+        app:layout_constraintStart_toStartOf="@+id/positionAward"
+        app:layout_constraintTop_toBottomOf="@+id/positionTextAward" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
