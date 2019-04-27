@@ -24,13 +24,13 @@ public class NewsArticleDownloaderAsyncTask extends AsyncTask<String, Void, Stri
     private static final String baseUrl =
             "https://newsapi.org/v2/everything?sources=";
     private static final String API_KEY = "&language=en&pageSize=100&apiKey=423b2938e0ba47ebad71deb2445fd9e5";
-    private MainActivity mainActivity;
+    private NewsService newsService;
 
-    public NewsArticleDownloaderAsyncTask(MainActivity mainActivity) {
+    public NewsArticleDownloaderAsyncTask(NewsService newsService) {
         // Pass in a reference to
         // the NewsService and a
         // news Source object
-        this.mainActivity = mainActivity;
+        this.newsService = newsService;
         // Set the NewsService
         // and news Source data
         // fields using the
@@ -55,7 +55,7 @@ public class NewsArticleDownloaderAsyncTask extends AsyncTask<String, Void, Stri
         // and the list of
         // categories
         // Call “setArticles” in NewsService
-        mainActivity.setArticles(articleObjects);
+        newsService.setArticles(articleObjects);
 
     }
 

@@ -1,5 +1,9 @@
 package com.example.news;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -29,6 +33,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.example.news.NewsService.ACTION_MSG_TO_SERVICE;
+import static com.example.news.NewsService.ACTION_NEWS_STORY;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
@@ -47,16 +54,19 @@ public class MainActivity extends AppCompatActivity {
 
     String currentSource;
 
+    NewsReceiver newsReceiver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         // Start Service (NewsService)
-        // [ insert here ]
+        Intent intent = new Intent(MainActivity.this, NewsService.class);
+        startService(intent);
 
         // Create a NewsReceiver object
-        // [ insert here ]
+        newsReceiver = new NewsReceiver();
 
         // Setup drawer, adapter and toggle
         mDrawerLayout = findViewById(R.id.drawer_layout); // <== Important!
@@ -67,8 +77,6 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         selectItem(position);
-                        // Close the drawer
-                        mDrawerLayout.closeDrawer(mDrawerList);
                     }
                 }
         );
@@ -99,22 +107,22 @@ public class MainActivity extends AppCompatActivity {
         // Set the ViewPager’s background to null
         pager.setBackground(null);
 
+        // Set the current news source object to the
+        // selected source (using the index passed in and
+        // your list of sources)
         currentSource = newsData.get(sourceList.get(position)).getId();
 
-        Log.d(TAG, "selectItem source: " + currentSource);
-        Toast.makeText(this, "selectItem source:" + currentSource, Toast.LENGTH_SHORT);
         // Create an Intent ACTION_MSG_TO_SVC
-        //Intent intent = new Intent(MainActivity.this, Articles.class);
+        Intent intent = new Intent(ACTION_MSG_TO_SERVICE);
 
         // Add the selected source object as an extra to the intent
-        // intent.putExtra(Source.class.getName(), source);
+        intent.putExtra("source", currentSource);
 
         // Broadcast the intent
-        // startActivity(intent);0
+        sendBroadcast(intent);
 
-        // startBroadcast(intent);
-        new NewsArticleDownloaderAsyncTask(this).execute(currentSource);
-
+        // Close the drawer
+        mDrawerLayout.closeDrawer(mDrawerList);
     }
 
     @Override
@@ -200,27 +208,6 @@ public class MainActivity extends AppCompatActivity {
         mDrawerList.setAdapter(new ArrayAdapter<>(this, R.layout.drawer_list_item, sourceList));
     }
 
-    public void setArticles(ArrayList<Article> articleObjects) {
-        setTitle(currentSource);
-
-         // Tell page adapter that all pages have changed
-        for (int i = 0; i < pageAdapter.getCount(); i++)
-            pageAdapter.notifyChangeInPosition(i);
-
-        // Clear the fragments list
-        fragments.clear();
-
-        // Create "n" new fragments where "n" is the menu selection "item" passed in.
-        for (int i = 0; i < articleObjects.size(); i++) {
-            fragments.add(ArticleFragment.newInstance(articleObjects.get(i), i+1, sourceList.size()));
-        }
-
-        // Tell the page adapter that the list of fragments has changed
-        pageAdapter.notifyDataSetChanged();
-
-        // Set the first fragment to display
-        pager.setCurrentItem(0);
-    }
     //////////////////////////////////////////////////////////////////////////////////////////////
     /**
      * A placeholder fragment containing a simple view.
@@ -313,5 +300,79 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
+    }
+
+    /////////////////////////////////////////////////////////////
+    class NewsReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            String action = intent.getAction();
+            if (action == null)
+                return;
+            // If the Intent’s action type is ACTION_NEWS_STORY,
+            // Get the Article list from the intent’s extras
+            switch (action) {
+                case ACTION_NEWS_STORY:
+                    ArrayList<Article> articles = (ArrayList) intent.getSerializableExtra("articles");
+                    // Call “reDoFragments” passing the list of artiles
+                    reDoFragements(articles);
+                    break;
+                default:
+                    Log.d(TAG, "onReceive: Unknown broadcast received");
+            }
+        }
+
+        public void reDoFragements(ArrayList<Article> articles) {
+            // Set Activity Title to the name of the current news source
+            setTitle(currentSource);
+
+            // For each Fragment in the PageAdapter (use a
+            // for loop, up to the adapter’s “getCount()”)
+            for (int i = 0; i < pageAdapter.getCount(); i++)
+                // Notify the adapter  about the change in position “i”
+                pageAdapter.notifyChangeInPosition(i);
+
+            // Clear the fragments list
+            fragments.clear();
+
+            // For each Article in the list passed in i = 0 thru “n”
+            for (int i = 0; i < articles.size(); i++) {
+                // Make a new Fragment using news article “I”
+                // Then add the new Fragment
+                //(using story “i” as the parameter to “newInstance”) to the Fragments list
+                fragments.add(ArticleFragment.newInstance(articles.get(i), i+1, sourceList.size()));
+            }
+
+            // Notify the PageAdapter that the dataset changed
+            pageAdapter.notifyDataSetChanged();
+
+            // Set the ViewPager’s current item to item “0”
+            pager.setCurrentItem(0);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        // Create IntentFilter for ACTION_NEWS_STORY
+        // messages from the service
+        IntentFilter intentFilter = new IntentFilter(ACTION_NEWS_STORY);
+
+        // Register a NewsReceiver broadcast receiver
+        // object using the intent filter
+        registerReceiver(newsReceiver, intentFilter);
+
+        // Call super.onResume()
+        super.onResume();
+    }
+
+    @Override
+    protected void onStop() {
+        // UnRegister the NewsReceiver object
+        unregisterReceiver(newsReceiver);
+
+        // Call super.onStop()
+        super.onStop();
     }
 }
