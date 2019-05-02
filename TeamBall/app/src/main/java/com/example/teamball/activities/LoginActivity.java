@@ -36,8 +36,6 @@ public class LoginActivity extends AppCompatActivity {
     private EditText data2;
     public static final String extraName = "DATA HOLDER";
 
-    private ProgressBar progressBar;
-
     private static int MY_LOCATION_REQUEST_CODE = 329;
 
     @Override
@@ -53,10 +51,6 @@ public class LoginActivity extends AppCompatActivity {
         prefs = new SharedPreference(this);
         data1.setText(prefs.getValue(getString(R.string.data1Key)));
         data2.setText(prefs.getValue(getString(R.string.data2Key)));
-
-        progressBar = findViewById(R.id.progressBar);
-        progressBar.bringToFront();
-        progressBar.setVisibility(View.GONE);
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION )
                 != PERMISSION_GRANTED) {
@@ -79,15 +73,6 @@ public class LoginActivity extends AppCompatActivity {
             clearAll();
         }
         Log.d(TAG, "itemClicked: " + Boolean.toString(c1.isChecked()));
-        // save the state of the checkbox
-
-        /*// Save
-        boolean checkBoxValue = c1.isChecked();
-        editor.putBoolean("c1", checkBoxValue);
-        editor.commit();;
-
-        // Load
-        c1.setChecked(settings.getBoolean("c1", true));*/
     }
 
     public void login(View w) {
@@ -100,7 +85,6 @@ public class LoginActivity extends AppCompatActivity {
         String uName = ((EditText) findViewById(R.id.userText)).getText().toString();
         String pswd = ((EditText) findViewById(R.id.passText)).getText().toString();
         Log.d(TAG, "login clicked: ");
-        progressBar.setVisibility(View.VISIBLE);
         new LoginAPIAsyncTask(this).execute(sId, uName, pswd);
     }
 
@@ -152,45 +136,22 @@ public class LoginActivity extends AppCompatActivity {
             }
         }
         else {
-            ArrayList<Reward> temp = new ArrayList<>();
-
             JSONObject json = null;
             try {
                 json = new JSONObject(s);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            int total = 0;
-            try{
-                JSONArray rewards = new JSONArray(json.getString("rewards"));
-                Log.d(TAG, "rewards: " + rewards.toString());
-                for (int j = 0; j < rewards.length(); j++) {
-                    JSONObject giver = rewards.getJSONObject(j);
-                    temp.add(new Reward(giver.getString("date"),
-                            giver.getString("name"),
-                            giver.getString("notes"),
-                            Integer.parseInt(giver.getString("value"))));
-                    total += Integer.parseInt(giver.getString("value"));
-                }
-                Log.d(TAG, "total: " + Integer.toString(total));
-            } catch (JSONException e) {
-                // do nothing
-            }
+
             UserProfile up = null;
             try {
                 up = new UserProfile(json.getString("firstName"),
                         json.getString("lastName"),
+                        json.getString("location"),
                         json.getString("username"),
                         json.getString("password"),
-                        json.getString("location"),
-                        Boolean.parseBoolean(json.getString("admin")),
-                        total,
-                        json.getString("department"),
-                        json.getString("position"),
-                        Integer.parseInt(json.getString("pointsToAward")),
-                        json.getString("story"),
                         json.getString("imageBytes"),
-                        temp);
+                        Integer.parseInt(json.getString("pointsToAward")));
                         //json.getString("rewards"));
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -200,6 +161,5 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
             Log.d(TAG, "supposed to start the activity: ");
         }
-        progressBar.setVisibility(View.GONE);
     }
 }

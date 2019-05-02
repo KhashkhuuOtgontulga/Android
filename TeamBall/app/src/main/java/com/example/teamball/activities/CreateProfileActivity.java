@@ -18,9 +18,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.MediaStore;
-import android.text.Editable;
-import android.text.InputFilter;
-import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
@@ -59,53 +56,40 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 public class CreateProfileActivity extends AppCompatActivity {
 
+    private static final String TAG = "CreateProfileActivity";
+    public static final String extraName = "DATA HOLDER";
+
+    private Criteria criteria;
+    private LocationManager locationManager;
+    private Location currentLocation;
+    private String location;
+
+    private static int MY_LOCATION_REQUEST_CODE = 329;
     private int REQUEST_IMAGE_GALLERY = 1;
     private int REQUEST_IMAGE_CAPTURE = 2;
     private static int MY_PHOTO_REQUEST_CODE = 329;
-    public static final String extraName = "DATA HOLDER";
-    public static int MAX_CHARS = 360;
 
     private EditText username;
     private EditText password;
     private EditText first_name;
     private EditText last_name;
-    private CheckBox administrator_flag;
-    private EditText department;
-    private EditText position;
-    private EditText story;
 
-    private TextView charCountText;
     private ImageView imageView;
     private ImageView add;
     private File currentImageFile;
-    private static final String TAG = "CreateProfileActivity";
 
     private UserProfile up;
-
-    private LocationManager locationManager;
-    private Location currentLocation;
-    private Criteria criteria;
-    private String location;
-    private static int MY_LOCATION_REQUEST_CODE = 329;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_createprofile);
 
-        username = findViewById(R.id.usernameProfile);
-        password = findViewById(R.id.passProfile);
         first_name = findViewById(R.id.firstNameEdit);
         last_name = findViewById(R.id.lastName);
-
-        administrator_flag = findViewById(R.id.administrator);
-        department = findViewById(R.id.departmentEdit);
-        position = findViewById(R.id.positionAward);
-        story = findViewById(R.id.story);
-        charCountText = findViewById(R.id.counter);
-
-        story.setFilters(new InputFilter[]{new InputFilter.LengthFilter(MAX_CHARS)});
-        addTextListener();
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        username = findViewById(R.id.usernameProfile);
+        password = findViewById(R.id.passProfile);
 
         imageView = findViewById(R.id.imageProfile2);
         add = findViewById(R.id.imageView3);
@@ -113,8 +97,6 @@ public class CreateProfileActivity extends AppCompatActivity {
 
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
-
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         criteria = new Criteria();
         criteria.setPowerRequirement(Criteria.POWER_LOW);
@@ -198,32 +180,6 @@ public class CreateProfileActivity extends AppCompatActivity {
         }
     }
 
-    private void addTextListener() {
-        story.addTextChangedListener(new TextWatcher() {
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                // Nothing to do here
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start,
-                                          int count, int after) {
-                // Nothing to do here
-                String countText = "(" + 0 + " of " + MAX_CHARS + ")";
-                charCountText.setText(countText);
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start,
-                                      int before, int count) {
-                int len = s.toString().length();
-                String countText = "(" + len + " of " + MAX_CHARS + ")";
-                charCountText.setText(countText);
-            }
-        });
-    }
-
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.createprofile_menu, menu);
         return true;
@@ -247,19 +203,13 @@ public class CreateProfileActivity extends AppCompatActivity {
                         ByteArrayOutputStream bitmapAsByteArrayStream = new ByteArrayOutputStream();
                         origBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bitmapAsByteArrayStream);
                         String imgString = Base64.encodeToString(bitmapAsByteArrayStream.toByteArray(), Base64.DEFAULT);
-                        ArrayList<Reward> temp = new ArrayList<>();
                         up = new UserProfile(first_name.getText().toString(),
                                 last_name.getText().toString(),
+                                location,
                                 username.getText().toString(),
                                 password.getText().toString(),
-                                location,
-                                administrator_flag.isChecked(),
-                                0,
-                                department.getText().toString(),
-                                position.getText().toString(),
-                                        1000,
-                                story.getText().toString(),
-                                imgString, temp);
+                                imgString,
+                                        1500);
                         createProfile(up);
                     }
                 });
@@ -280,9 +230,9 @@ public class CreateProfileActivity extends AppCompatActivity {
     private void createProfile(UserProfile up) {
         Log.d(TAG, "createProfile activity and method: ");
         new CreateProfileAPIAsyncTask(this).execute("A20379665",
-                up.getUsername(), up.getPassword(), up.getFirst_name(), up.getLast_name(),
-                "", up.getDepartment(), up.getStory(), up.getPosition(),
-                Boolean.toString(up.isAdministrator_flag()), up.getLocation(), up.getImage());
+                up.getFirst_name(), up.getLast_name(),
+                up.getLocation(), up.getUsername(), up.getPassword(),
+                up.getImage(), Integer.toString(up.getRating()));
     }
 
     public void pickOption(final View w) {

@@ -5,7 +5,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.example.rewards.Activities.ProfileActivity;
+import com.example.teamball.activities.ProfileActivity;
 
 import org.json.JSONObject;
 

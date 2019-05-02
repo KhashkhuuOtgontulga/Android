@@ -140,40 +140,12 @@ public final class LeaderboardActivity extends AppCompatActivity
                     userProfilesList.add(
                             new UserProfile(profile.getString("firstName"),
                                     profile.getString("lastName"),
+                                    profile.getString("location"),
                                     profile.getString("username"),
                                     profile.getString("password"),
-                                    profile.getString("location"),
-                                    Boolean.parseBoolean(profile.getString("admin")),
-                                    total,
-                                    profile.getString("department"),
-                                    profile.getString("position"),
-                                    Integer.parseInt(profile.getString("pointsToAward")),
-                                    profile.getString("story"),
                                     profile.getString("imageBytes"),
-                                    temp));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-            initiateData(userProfilesList);
-        }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                Log.d(TAG, "in home button: ");
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == ADD_CODE) {
+                                    Integer.parseInt(profile.getString("pointsToAward")))); v
+                } catch (JSvfgvb
             if (resultCode == RESULT_OK) {
                 UserProfile dh = (UserProfile) data.getSerializableExtra("TARGET");
                 profileList.remove(pos);

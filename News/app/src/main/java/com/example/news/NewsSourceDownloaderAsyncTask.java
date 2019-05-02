@@ -17,6 +17,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 
@@ -28,35 +31,29 @@ public class NewsSourceDownloaderAsyncTask extends AsyncTask<String, Void, Strin
     private MainActivity mainActivity;
 
     public NewsSourceDownloaderAsyncTask(MainActivity mainActivity) {
-        // Pass in a reference to
-        // the MainActivity and
-        // the String news
-        // category
+        // Pass in a reference to the MainActivity and the String news category
         this.mainActivity = mainActivity;
-        // If the news category
-        // string passed in is “all” -
-        // set the category data
-        // member to an empty
-        // string
+        // If the news category string passed in is “all” - set the category data member to an empty string
 
-        // Otherwise, set the
-        // category data member
-        // to the category string
-        // passed in
+        // Otherwise, set the category data member to the category string passed in
     }
 
     @SuppressLint("StaticFieldLeak")
-    
-    
-
     @Override
     protected void onPostExecute(String connectionResult) {
         // Parse JSON string of sources into a list of “Source” objects
         ArrayList<Source> sourceObjects = parseJSON(connectionResult);
+        HashMap<String, Source> unique = new HashMap<>();
+
+        for (Source s : sourceObjects) {
+            unique.put(s.getCategory(), s);
+        }
+        // Create a list of unique news category names taken from the source objects
+        ArrayList<String> categories = new ArrayList<>(unique.keySet());
 
         // Call “setSources” in MainActivity passing the
         // list of source objects and the list of categories
-        mainActivity.setSources(sourceObjects);
+        mainActivity.setSources(sourceObjects, categories);
     }
 
     @Override
