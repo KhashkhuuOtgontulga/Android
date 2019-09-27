@@ -10,12 +10,14 @@
         android:id="@+id/symbolField"
         android:layout_width="103dp"
         android:layout_height="0dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="48dp"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
         android:text="@string/textview"
         android:textAlignment="viewStart"
         android:textSize="24sp"
         android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/latestPriceField"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -23,53 +25,54 @@
         android:id="@+id/companyNameField"
         android:layout_width="200dp"
         android:layout_height="50dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:text="@string/textview"
         android:textSize="14sp"
         android:textStyle="italic"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/symbolField"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/symbolField"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.026"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/symbolField"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/latestPriceField"
         android:layout_width="80dp"
         android:layout_height="30dp"
-        android:layout_marginStart="12dp"
         android:text="@string/textview"
         android:textAlignment="center"
         android:textSize="18sp"
         app:layout_constraintBaseline_toBaselineOf="@+id/symbolField"
-        app:layout_constraintStart_toEndOf="@+id/symbolField" />
+        app:layout_constraintEnd_toStartOf="@+id/changeField" />
 
     <TextView
         android:id="@+id/changeField"
-        android:layout_width="80dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="8dp"
+        android:layout_width="92dp"
+        android:layout_height="33dp"
+        android:layout_marginEnd="8dp"
         android:text="@string/textview"
         android:textAlignment="textEnd"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="@+id/latestPriceField"
-        app:layout_constraintStart_toEndOf="@+id/latestPriceField"
-        app:layout_constraintTop_toTopOf="@+id/latestPriceField" />
+        app:layout_constraintEnd_toStartOf="@+id/changePercentField"
+        app:layout_constraintTop_toTopOf="@+id/latestPriceField"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/changePercentField"
-        android:layout_width="76dp"
-        android:layout_height="0dp"
-        android:layout_marginEnd="8dp"
+        android:layout_width="71dp"
+        android:layout_height="31dp"
+        android:layout_marginEnd="16dp"
         android:text="@string/textview"
         android:textAlignment="center"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="@+id/changeField"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/changeField"
-        app:layout_constraintTop_toTopOf="@+id/changeField" />
+        app:layout_constraintTop_toTopOf="@+id/changeField"
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

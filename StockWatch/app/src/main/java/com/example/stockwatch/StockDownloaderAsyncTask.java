@@ -19,12 +19,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.net.ssl.HttpsURLConnection;
+
 import static android.content.ContentValues.TAG;
 
 public class StockDownloaderAsyncTask extends AsyncTask<String, Integer, String> {
 
     private MainActivity mainActivity;
     private static String STATS_URL;
+    private static final String API_KEY = "sk_a9a77a68d61544529b8b142b6f247f6e";
     private int code;
 
     public StockDownloaderAsyncTask(MainActivity ma) {
@@ -60,7 +63,9 @@ public class StockDownloaderAsyncTask extends AsyncTask<String, Integer, String>
         String stock_symbol = params[0];
         code = Integer.parseInt(params[1]);
         Log.d(TAG, "stock symbol is " + stock_symbol);
-        STATS_URL = "https://api.iextrading.com/1.0/stock/" + stock_symbol + "/quote?displayPercent=true";
+        STATS_URL = "https://cloud.iexapis.com/v1/stock/" + stock_symbol + "/quote?token=" + API_KEY + "&displayPercent=true";
+        // add on displayPercentage
+        // https://cloud.iexapis.com/v1/stock/aapl/quote?token=sk_a9a77a68d61544529b8b142b6f247f6e&displayPercent=true
         Uri dataUri = Uri.parse(STATS_URL);
         String urlToUse = dataUri.toString();
         Log.d(TAG, "URL is " + STATS_URL);

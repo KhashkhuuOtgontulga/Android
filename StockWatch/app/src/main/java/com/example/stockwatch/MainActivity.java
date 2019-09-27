@@ -76,6 +76,7 @@ public class MainActivity extends AppCompatActivity
         });
 
         // load the stock symbol and name into the Hashmap
+        // progress bar? the data loads so long
         new NameDownloaderAsyncTask(this).execute();
 
         // load the stocks of our database
@@ -225,6 +226,11 @@ public class MainActivity extends AppCompatActivity
                     final ArrayList<String> sArray = new ArrayList<String>();
                     int i = 0;
 
+
+                    // For example, FB - Facebook
+                    // FB is at index 0
+                    // Facebook is at index 1
+                    // Checking how many stocks match the input with the available stocks from the API call
                     for (Map.Entry<String, String> e : sData.entrySet()) {
                         if (e.getKey().startsWith(input) || e.getValue().split(" ")[0].startsWith(input)) {
                             Log.d(TAG, "Results "+ i + ": " + e.getKey() + " " + e.getValue());
@@ -235,13 +241,15 @@ public class MainActivity extends AppCompatActivity
                     // One stock found
                     if(i == 1) {
                         Log.d(TAG, "One found");
-                        // its a key
+                        // if the input is a stock symbol
                         if(sData.containsKey(input)) {
                             // Use selected symbol to execute StockDownloader AsyncTask
+                            // to download and display the stock
                             downloadStock(input, Integer.toString(ADD_CODE));
                         }
                         else {
-                            // its a value
+                            // its not a company symbol so that means it is a company name
+                            // get the stock symbol from the (symbol - name)
                             downloadStock(sArray.get(0).split(" ")[0], Integer.toString(ADD_CODE));
                         }
                     }
@@ -289,7 +297,7 @@ public class MainActivity extends AppCompatActivity
                 // make sArray[which] to a String by sArray[which].toString
                 // then split it to get the first index which is the symbol of the company
                 Toast.makeText(MainActivity.this, "You selected: " + array[which].toString().split(" ")[0], Toast.LENGTH_SHORT).show();
-                downloadStock(array[which].toString().split(" ")[0], Integer.toString(ADD_CODE));
+                downloadStock(array[which].split(" ")[0], Integer.toString(ADD_CODE));
             }
         });
 
@@ -370,8 +378,10 @@ public class MainActivity extends AppCompatActivity
     }
 
     // after returning from NameDownloaderAsyncTask
-    // initialize the hashmap sData so we can check if we
-    // have found a stock or not when we add a stock
+    // initialize the hashmap sData
+    // so we can have a reference to all the company symbols and names
+    // I will use this reference to add from a single stock, multiple stocks, or no stock
+    // adding a stock will be from the symbol/Key or the name/Value
     public void initiateData(HashMap<String, String> data) {
         sData = data;
     }

@@ -16,12 +16,14 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
 
+import javax.net.ssl.HttpsURLConnection;
+
 
 public class NameDownloaderAsyncTask extends AsyncTask<String, Integer, String> {
 
     private MainActivity mainActivity;
-
-    private static final String DATA_URL = "https://api.iextrading.com/1.0/ref-data/symbols";
+    private static final String API_KEY = "sk_a9a77a68d61544529b8b142b6f247f6e";
+    private static final String DATA_URL = "https://cloud.iexapis.com/stable/ref-data/symbols/?token=" + API_KEY;
     private static final String TAG = "NameDownloaderAsyncTask";
     public HashMap<String, String> sData = new HashMap<>();
 
@@ -32,12 +34,15 @@ public class NameDownloaderAsyncTask extends AsyncTask<String, Integer, String> 
 
     @Override
     protected void onPreExecute() {
+        Log.d(TAG, "onPreExecute: Loading Stock Data...");
         Toast.makeText(mainActivity, "Loading Stock Data...", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     protected void onPostExecute(String s) {
         mainActivity.initiateData(sData);
+        Log.d(TAG, "onPostExecute: Stock Data Loaded.");
+        Toast.makeText(mainActivity, "Stock Data Loaded.", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -54,7 +59,7 @@ public class NameDownloaderAsyncTask extends AsyncTask<String, Integer, String> 
 
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
-            Log.d(TAG, "doInBackground: ResponseCode: " + conn.getResponseCode());
+            //Log.d(TAG, "doInBackground: ResponseCode: " + conn.getResponseCode());
 
             // Download stock symbols & names JSON
             conn.setRequestMethod("GET");
